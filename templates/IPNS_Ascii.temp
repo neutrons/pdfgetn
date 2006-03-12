@@ -1,0 +1,52 @@
+Template written: Wed Nov 24 15:03:09 EST 1999
+produced by proffen
+##### Run Information     runCorrection=T
+prep=sepd     machine=sepd
+run=        background=
+smooth=2  smoothParam=10 10 0
+in beam: radius=     height=
+temp=     runTitle=
+
+##### Vanadium     runCorrection=T
+run=     background=
+smooth=2  smoothParam=10 10 0
+in beam: radius=     height=
+
+##### Container     runCorrection=T
+run=     background=
+smooth=2  smoothParam=10 10 0
+wallThick=     atomDensity=0.072110
+atomic information: scattCS=5.100     absorpCS=5.080
+
+##### Sample Material     numElements=0
+Element relAtomNum atomMass atomCoherCS atomIncoherCS atomAbsorpCS
+density=     effDensity=
+
+##### Banks=0
+bank   angle   blendQmin   blendQmax       (0.0 means no info)
+
+##### Program Specific Information
+## Ft     calcError=1     (1 for true, 0 for false)
+numRpoints=2000     maxR=20.0     numDensity=0.0
+## Damp     Qmin=1.0     Qmax=45.0     startDampQ=45.0
+dampFuncType=0     modEqn=1.0*S(Q) +0.0 +0.0*Q
+## Blend     numBanks=0     banks=
+## Soqd     minProcOut=0
+samPlaczek=T     vanPlaczek=T     smoothData=0     modifyData=1
+## Corps     minProcOut=0     numBanksMiss=0
+
+##### prepsepd     prepOutput=1     numBanksMiss=0     fileExt=asc
+firstMonitor=5     secondMonitor=7
+neutFunc=1     neutFrac=0.04
+neutMinLambda=0.25     neutMaxLambda=5.27
+neutStartLambda=0.0     neutEndLambda=0.0
+numCal=6
+Angle    Difc        DifA       Tzero
+139.69   7356.98     1.45      -1.84
+150.0    7570.45     1.40      -2.83
+90.0     5578.08     3.91       1.75
+60.0     3904.24    10.77      13.04
+30.0     2025.77     0.00       0.00
+14.62    997.74      0.00       0.00
+numBanksAdd=0
+numBanksMult=0

@@ -1,0 +1,54 @@
+License - PDFgetN
+
+By downloading PDFgetN software from this Web site, you agree to the
+following terms and conditions concerning its use.  If you have any
+questions about these license terms, please contact Libraries,
+Computing & Technology, Michigan State University - (517)353-0722.
+
+PDFgetN software, both binary and source (hereinafter "Software") is
+copyrighted by the Michigan State University Board of Trustees.
+
+Michigan State University grants you, as End User, the non-exclusive,
+perpetual, royalty-free right to use the Software.  End User may
+distribute the Software to third parties, provided that the MSU
+copyright notice and this statement is included with all copies and
+that no charge is associated with such distribution.
+
+End User may make derivative works from the Software, If End User
+distributes any derivative work based on the Software, then Licensee
+will 
+
+(l) Notify Michigan State University [Libraries, Computing &
+    Technology 517-353-0722]
+
+(2) Notify users that the derivative work is a modified version of
+    PDFgetN and not the original PDFgetN distributed by Michigan State
+    University
+
+(3) Acknowledge the work of (P.F.Peterson, M.Gutmann, Th.Proffen, and
+    S.J.L.Billinge, PDFgetN: A user-friendly program to extract the
+    total scattering structure function and the pair distribution
+    function from neutron powder diffraction data, J. Appl. Cryst.,
+    33, 1192 (2000))
+
+(4) no fee is associated with the distribution of the derivative work.
+
+End Users wishing to make commercial use of the Software must contact
+Libraries, Computing & Technology, Michigan State University, East
+Lansing, MI 48824; (517)353-0722 prior to any commercial distribution
+to discuss terms.
+
+The Software is provided to End User by MSU on an "as is" basis.  No
+user support is provided or implied.
+
+MSU MAKES NO WARRANTY, EXPRESS OR IMPLIED TO END USER OR TO ANY OTHER
+PERSON OR ENTITY.  SPECIFICALLY, MSU MAKES NO WARRANTY OF
+MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE OF THE
+SOFTWARE. MSU WILL NOT BE LIABLE FOR SPECIAL, INCIDENTAL,
+CONSEQUENTIAL, INDIRECT OR OTHER SIMILAR DAMAGES, EVEN IF MSU OR ITS
+EMPLOYEES HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES,
+REGARDLESS OF THE FORM OF THE CLAIM.
+
+This license shall be governed by Michigan law.
+
+MSU is an affirmative action/equal opportunity institution

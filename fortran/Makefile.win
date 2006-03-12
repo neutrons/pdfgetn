@@ -1,0 +1,108 @@
+##############################################################################
+# Makefile for data processing codes ..
+##############################################################################
+
+F77  =  g77
+FFLAGS  = -O0 -fno-f2c
+LDFLAGS = 
+
+INSTALL_DIR  = ../binary
+INSTALL_MOD = 755
+
+##############################################################################
+# no changes should be needed below this line
+##############################################################################
+
+USEPDPREP1_INC = parameters.inc usepdprep1.inc
+USEPDPREP1_OBJ = usepdprep1.o how_long1.o uSepdReadHeader1.o uReadThisBank1.o \
+		 uSumTheseData1.o uIntegrateMonitor1.o uDelayedNeutFrac1.o \
+                 uLamCal1.o uNormalizeThisBank1.o uSubtractData1.o \
+                 uKuplotOut1.o uVanProc1.o uSmoothThis1.o uSepdInt_Out1.o \
+                 uSavitzkyGolay1.o uDetermineDataRange1.o uKillPeaks1.o \
+                 uSepdLambdatoQ1.o
+
+GLADPREP1_INC = parameters.inc gladprep1.inc
+GLADPREP1_OBJ = gladprep1.o how_long1.o uGladReadBank1.o uSumTheseData1.o \
+                uSubtractData1.o uLambdaQ1.o uKuplotOut1.o uVanProc1.o \
+                uSavitzkyGolay1.o uSmoothThis1.o uSepdInt_Out1.o uKillPeaks1.o
+
+ARIELPREP_INC = parameters.inc arielprep.inc
+ARIELPREP_OBJ = arielprep.o how_long1.o uArielReadBank1.o uSumTheseData1.o \
+                uSubtractData1.o uKuplotOut1.o uVanProc1.o \
+                uSavitzkyGolay1.o uSmoothThis1.o uSepdInt_Out1.o \
+                uLambdaQ1.o uKillPeaks1.o
+
+GSASPREP_INC  = parameters.inc gsasprep.inc
+GSASPREP_OBJ  = gsasprep.o how_long1.o uGsasRead.o uSumTheseData1.o \
+                uSubtractData1.o uKuplotOut1.o uVanProc1.o \
+                uSavitzkyGolay1.o uSmoothThis1.o uSepdInt_Out1.o \
+                uKillPeaks1.o uLambdaQ1.o uNormalizeThisBank1.o
+
+SEPDPREP_INC = parameters.inc
+SEPDPREP_OBJ = sepdprep.o group.o cmima.o lamcal.o fndlam.o prepdat.o monspc.o \
+           detspc.o effcyl.o vanproc.o canproc.o add.o datin.o smooth.o \
+	   poly2fit.o 
+
+CORPS_INC = const.inc
+CORPS_OBJ = corps.o
+
+SOQD_INC = parameters.inc
+SOQD_OBJ = soqd.o how_long1.o reduct.o corpl.o misc.o uKuplotCorrOut.o \
+	   poly2fit.o smooth.o
+
+BLEND_INC = const.inc
+BLEND_OBJ = ublend4.o uRebinQ2.o checkroot.o soqread.o how_long1.o
+
+DAMP_INC = const.inc
+DAMP_OBJ = damp.o
+
+FT_INC =
+FT_OBJ = ft.o
+
+all: prepnorm.exe prepariel.exe prepsepd.exe prepgsas.exe corps.exe soqd.exe blend.exe damp.exe ft.exe
+
+# Fortran
+
+.f.o:
+	$(F77) -c $(FFLAGS) $<
+
+# programs
+
+prepsepd.exe:$(USEPDPREP1_OBJ)
+	$(F77) -o prepsepd.exe $(USEPDPREP1_OBJ) $(LDFLAGS)
+
+prepnorm.exe:$(GLADPREP1_OBJ)
+	$(F77) -o prepnorm.exe $(GLADPREP1_OBJ) $(LDFLAGS)
+
+prepariel.exe:$(ARIELPREP_OBJ)
+	$(F77) -o prepariel.exe $(ARIELPREP_OBJ) $(LDFLAGS)
+
+prepgsas.exe:$(GSASPREP_OBJ)
+	$(F77) -o prepgsas.exe $(GSASPREP_OBJ) $(LDFLAGS)
+
+corps.exe:$(CORPS_OBJ)
+	$(F77) -o corps.exe $(CORPS_OBJ) $(LDFLAGS)
+
+soqd.exe:$(SOQD_OBJ) poly2fit.o smooth.o
+	$(F77) -o soqd.exe $(SOQD_OBJ) $(LDFLAGS)
+
+blend.exe:$(BLEND_OBJ) 
+	$(F77) -o blend.exe $(BLEND_OBJ) $(LDFLAGS)
+
+damp.exe:$(DAMP_OBJ)
+	$(F77) -o damp.exe $(DAMP_OBJ) $(LDFLAGS)
+
+ft.exe: $(FT_OBJ)
+	$(F77) -o ft.exe $(FT_OBJ) $(LDFLAGS)
+
+# installation
+
+install: prepsepd.exe prepnorm.exe prepariel.exe prepgsas.exe corps.exe soqd.exe blend.exe damp.exe ft.exe
+	cp *.exe $(INSTALL_DIR)
+
+# cleanup
+
+clean:
+	rm -f *~ *.o *.exe
+
+

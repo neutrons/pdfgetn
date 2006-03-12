@@ -1,0 +1,53 @@
+##################################################
+# Defaults for PDFgetN
+#
+# The file is organized in pairs of keyword and
+# value on separate lines.
+##################################################
+
+## Removing intermediate files
+remove = 1
+
+## Active panel
+panel = e
+
+## Colour scheme
+foreground = #000000
+background = #d2d2d2
+headerfg   = #c3063c
+headerbg   = #afafaf
+successbg  = #008040
+successfg  = #ffff80
+highlight1 = #3f75a2
+highlight2 = #daa520
+
+## Working directory
+workdir    = C:/Thomas/src/PDFgetN-1.4b/tutorial/
+
+## Plotting defaults
+plotcol0   = #ffffff
+plotcol1   = #000000
+plotcol2   = #00ff00
+plotcol3   = #0000ff
+plotcol4   = #ff00ff
+plotcol5   = #ffff00
+plotcol6   = #000000
+plotcol7   = #990000
+plotcol8   = #009900
+plotcol9   = #000099
+plotcol10  = #990099
+plotcol11  = #999900
+plotcol12  = #808080
+plotcol13  = #00ffff
+plotcol14  = #ff9999
+plotcol15  = #000000
+
+print_file = 0
+print_fnam = pdfgetn.ps
+print_cmd  = print /d:'\\POPLER\Dover'  
+error_bars = 0
+markers    = 0
+interactiv = 0
+plot_rsoq  = 0
+plot_blend = 0
+plot_keep  = 0

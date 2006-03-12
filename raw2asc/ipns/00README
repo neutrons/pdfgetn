@@ -1,0 +1,22 @@
+==============================================================================
+(1) SEPD binary to ASCII conversion
+
+This directory contains the binary-to-ascii conversion program for IPNS
+data files (only tested for SEPD so far). The usage is simply
+
+  sepdbtoa file1.run file2.run ...
+
+One can specify multiple files and each file is converted. The output
+files are called xxxxxxx.asc. An optional parameter -h allows one to 
+extract another than the default first histogram, e.g.
+
+  sepdbtoa -h 2 file.run
+
+The resulting ascii files can be processed with PDFgetN.
+==============================================================================
+(2) ASCII raw data to SPEC file conversion for plotting
+
+Sometimes one might want to be able to look at the SEPD raw data in
+ToF space. The utility 'asc2plot' converts the output of 'sepdbtoa'
+to a SPEC file which can be read e.g. with KUPLOT. 
+==============================================================================

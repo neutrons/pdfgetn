@@ -1,0 +1,904 @@
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+PDFgetN Changes 1.6 -> 1.6.x
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+January 9, 2006
+
+neutron.table
+  Scattering length for Li set to be negative.
+--------------------------------------------------------------------------
+December 16, 2005
+
+fortran/ublend4.f
+  File blen_bin.dat is now always written - not only if bank matching
+  is enabled.
+
+fortran/ublend4.f fortran/uRebinQ2.f
+  Problems with external corection file rebinning fixed.
+
+PDFgetN.pl
+  Version changed to 1.6.3
+--------------------------------------------------------------------------
+December 13, 2005
+
+PDFgetN.pl
+  New command line parameter -P allows to overwrite certain processing
+  parameters (currently run, tempp and dens)
+
+  Version set to 1.6.2
+--------------------------------------------------------------------------
+October 30, 2005
+
+fortran/gsasprep.f
+  Some problems with determination of weights for non NPDF files 
+  fixed.
+--------------------------------------------------------------------------
+October 3, 2005
+
+install.pm
+  Small changes to install script.
+
+body.pm
+  More changes to automatic normalization.
+--------------------------------------------------------------------------
+September 23, 2005
+
+PDFgetN.pl
+  Call to table::getStats() added in non-gui mode. 
+  Autonormalization in non-gui mode is reapeated if |<S(Q)>-1| > 0.01
+--------------------------------------------------------------------------
+June 26, 2005
+
+PDFgetN.pl
+  Version updated to 1.6.
+--------------------------------------------------------------------------
+June 24, 2005
+
+body.pm, Qual.pm
+  New feature to automatically normalize data added.
+--------------------------------------------------------------------------
+June 17, 2005
+
+File.pm
+  Bug fixed.
+--------------------------------------------------------------------------
+June 8, 2005
+
+*.pm defaults
+  Added font handling (see PDFFIT Gui)
+--------------------------------------------------------------------------
+May 23, 2005
+
+fortran/gsasprep.f ..
+  Normalization error for multiple background files fixed.
+  Error when merging normalized (NPDF) files fixed.
+--------------------------------------------------------------------------
+October 29, 2004
+
+tutorial
+  NPDF example added.
+
+body.pm
+  Bank deselect bug fixed.
+
+fortran/uGsasRead.f
+  GSAS file format FXYE added.
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+PDFgetN Changes 1.5 -> 1.5.x
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+March 23, 2004 (1.5.6)
+
+PDfgetN.lsb
+  Missing installer files for Windows added.
+
+fortran/soq2gsa ..
+  Bug fixes.
+  Added spectrum functions 3 and 4.
+  Added scale/offset information to GSAS output.
+  Added feature to set values outside of BLEND limits to zero in GSAS file
+
+File.pm
+  Mask to load instrument parameter files changed to *.iparm
+  Bug fix in interface to soq2gsa ..
+--------------------------------------------------------------------------
+March 21, 2004 (1.5.5)
+
+Plot.pm
+  Option to plot reference data added.
+
+bin2asc/.. File.pm PDFgetN.pl
+  New tool soq2gsa added. Menu File Save GSAS ..
+--------------------------------------------------------------------------
+March 4, 2004 (1.5.4)
+
+fortran/ublend4.f
+  Part to delete trailing zeros after blending removed -> causes trouble.
+
+File.pm
+  Title preset bug for multile sample files fixed.
+--------------------------------------------------------------------------
+December 19, 2003 (1.5.3)
+
+fortran/uGsasRead.f
+  Bug in reading GSAS files fixed.
+--------------------------------------------------------------------------
+July 29, 2003 (1.5.1)
+
+fortran/gsasprep.f
+  Bug fixed that prevented V kill peaks to work correctly.
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+PDFgetN Changes 1.4.2 -> 1.5
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+February 11, 2003
+
+body.pm, Hist.pm, rsoqd.pm
+  Plazcek correction flags now in GUI as well.
+
+templates/*.temp
+  Templates renamed and reduced to the four supported formats.
+--------------------------------------------------------------------------
+February 10, 2003
+
+Hist.pm, body.pm, PDFgetN.pl
+  Optimize can now be selected from command line. Small bug when 
+  running -nogui fixed.
+--------------------------------------------------------------------------
+February 6, 2003
+
+body.pm
+  Bug in Q-limit dialog fixed.
+  Optimze dialog redesigned - user can specify maximum iterations now.
+--------------------------------------------------------------------------
+February 3, 2003
+
+rprepariel.pm
+  Problem with readinf title information fixed.
+--------------------------------------------------------------------------
+January 20, 2003
+
+fortran/iKullPeaks1.f
+  Screen output cleaned up.
+
+Plot.pm
+  Spelling of Placzek corrected.
+
+PDFgetN.pl
+  Version changed to 1.5
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+PDFgetN Changes 1.4.1 -> 1.4.2
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+January 11, 2003
+
+fortran/uNormalizeThisBank1.f fortran/gsasprep.f
+  Problem with normalization of multiple data sets from NPDF fixed.
+--------------------------------------------------------------------------
+December 12, 2002
+
+fortran/uGsasRead.f
+  Error propagation for scaling data missing - fixed.
+
+fortran/gsasprep.f
+  No normalization with error propagation if monitor=1 !
+--------------------------------------------------------------------------
+September 24, 2002
+
+Qual.pm and bin2asc/pdf2asc.f
+  Changed to reflect another revision in the definition of Glow.
+
+--------------------------------------------------------------------------
+September 16, 2002
+
+Plot.pm
+  Changed one line of code to use "unlink" rather than a system call
+  to "rm".
+--------------------------------------------------------------------------
+September 10, 2002
+
+bin2asc/pdf2asc.f
+  Updated the calculation of Glow to be the same as in Qual.pm. As
+  always there is a small descrepency between the two values.
+
+body.pm
+  Now calls pdfqual with more appropriate command line parameters.
+--------------------------------------------------------------------------
+September 06, 2002
+
+Qual.pm
+  Changed Glow to reflect the new (more physical) form in the quality
+  paper. The same change needs to be done to the ft so the optimize
+  button works accordingly.
+--------------------------------------------------------------------------
+August 27, 2002
+
+Qual.pm
+  Fixed a couple of bugs with the command line (didn't actually read
+  it in) and calculating Glow. Also parameterized the Glow weighting
+  so it can be changed near the top of the file and affects the
+  calculation of rhofit and Glow.
+--------------------------------------------------------------------------
+  August 20, 2002
+
+Win.pm, Unix.pm, r*.pm
+  The new ActiveState Perl creates DOS type files now by default and those
+  do not work when redirecting. Now we have a OS specific file open 
+  routine that switches to BINARY mode in case of Windows.
+--------------------------------------------------------------------------
+August 16, 2002
+
+fortran/uGsasRead.f
+  HDFBIN can create normalized files, in this case the MONITOR keyword
+  is not required. Those files are identified by #monitor_scale in the
+  file header section.
+--------------------------------------------------------------------------
+July 24, 2002
+
+fortran/uGsasRead.f
+  Problem with GSAS reader for type CONST fixed.
+--------------------------------------------------------------------------
+July 05, 2002
+
+fortran/ublend4.f, rblend.pm
+  Automatic bank matching added - works similar to 'match' command in
+  KUPLOT. New intermediate file blen_bin.dat contains the rebinned
+  scaled bank data just before merging.
+
+  The fields matchScal and matchOffset are T or F to determine if a scale
+  or an offset or both should be used. The resulting scale and offset
+  values are printed in the log file and can be inspected using 'show
+  logs'.
+
+Plot.pm
+  Added rebinned/matched S(Q) to correction plotting.
+
+body.pm
+  GUI to specify reference bank for automatic matching added.
+  A value of 0 turns the automatic matching off.
+--------------------------------------------------------------------------
+July 03, 2002
+
+Plot.pm, colors.pm, defaults
+  New checkbox 'keep plotting range' allows to keep a fixed plotting 
+  area. Useful to keep zoomed into some area when changing processing
+  parameters. NOTE: REQUIRES UPDATED KUPLOT !
+
+PDFgetN.pl, body.pm, plot.pm, Win.pm, Unix.pm
+  The select color for buttons is now different for UNIX and WINDOWS 
+  due to differences in the appearence of this widget element (UNIX:
+  selected by color, WINDOWS: by tick mark).
+
+body.pm
+  ABS around TTH for Qmin/Qmax dialog.
+
+uLambdaQ1.f
+  ABS around TTH for banks included to avoid negative Q values !
+
+PDFgetN.pl
+  Version updated.
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+PDFgetN Changes 1.4 -> 1.4.1
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+June 19, 2002
+
+rsoqd.pm
+  Error checking for samPlaczek/vanPlaczek fixed.
+
+rprep*.pm, File.pm, body.pm templates/*
+  The default extension for data files can now be set in the history 
+  file.
+--------------------------------------------------------------------------
+May 9, 2002
+
+gsasprep.f
+  Division by number of data sets removed - the normalization was 
+  taken care of by the total monitor count.
+
+gsasprep.inc gsasprep.f uGsasRead.f
+  The prepstep can now read GSAS files produced by ISAW. Bank 0 is
+  ignored if present (contains monitor - might be used later). Also
+  the banks can be numbered in any way - however, the bank numbers 
+  in the instrument parameter file and data file MUST match. After
+  the prepstep the banks are numbered 1,2,3,4,...
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+PDFgetN Changes 1.3.7 -> 1.4
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+January 25, 2002
+
+PDFgetN.pl
+  Version changed to 1.4 - this will probably be the final version of
+  PDFgetN ..
+--------------------------------------------------------------------------
+January 16, 2002
+
+rprep*.pm, body.pm
+  Prepsteps now use three different input files for processing SAM, CAN
+  and VAN.
+
+  Also extended format for additive and multiplicative constants
+
+body.pm
+  Sleep time for panel change (UNIX fix) reduced to 0.1 sec.
+--------------------------------------------------------------------------
+January 7, 2002
+
+install.pm, fortran/Makefile
+  Problems with LINUX fixed.
+
+Plot.pm, PDFgetN.pl, Qual.pm, Unix.pm, Win.pm
+  Some more LINUX problems fixed !
+--------------------------------------------------------------------------
+January 6, 2002
+
+help.pm, PDFgetN.pl, Win.pm, Unix.pm, Stdio.pm
+  Added feature to click on homepage in 'about dialog'. This required
+  some Windows specific code - now we have Win.pm and Unix.pm for those
+  specific things.
+
+  This allows me to spawn a process on Windows and may be get PDFworking
+  working in the end ;-))
+
+rprep*.pm, body.pm
+  Removed prep_special call which is obsolete now that HIPDPREP is dead !
+
+body.pm, PDFworking.pl
+  Removed PDFworking calls.
+--------------------------------------------------------------------------
+January 5, 2002
+
+PDFgetN.pl Plot.pm, Hist.pm
+  Small bugs in PLOTTING fixed.
+
+Help.pm, install.pm
+  Cleanup ..
+
+body.pm
+  Fields for bank number and angle are now only labels - no editing !
+  (can still be changed in expert edit mode though ..)
+--------------------------------------------------------------------------
+January 4, 2002
+
+body.pm, rprepgsas.pm
+  Some problems with files with prepName=hipd fixed.
+
+PDFqual.pl, Qual.pm, body.pm
+  PDFqual integrates as subroutine. PDFqual.pl is now a wrapper to call
+  the subroutine. Entry fields from PDFqual dialog removed. RHO0 entry
+  field added to FT panel.
+
+Plot.pm, colors.pm
+  New dialog to change KUPLOT plotting colors added (see menu change
+  colors). Also plot settings are now saved in defaults file.
+--------------------------------------------------------------------------
+December 31, 2001
+
+many files
+  Integrated PDFplot.pl into PDFgetN ..
+--------------------------------------------------------------------------
+December 29, 2001
+
+PDFgetN.pl
+  Added several require Tk::* to make PerlApp build a working free
+  standing executable !
+--------------------------------------------------------------------------
+December 24, 2001
+
+PDFgetN.pl
+  Version changed to 1.4b. 
+  (b = beta version until release with new manual.)
+
+soqd.f, reduct.f, uKuplotCorrOut.f, rsoqd.pm
+  SOQD now exports SPEC type file for absoprtion, Placzek and multiple
+  scattering corrections. 
+
+Hist.pm, body.pm, fortran/*
+  Prepstep HIPD removed - JOY ;-)
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+PDFgetN Changes 1.3.6 -> 1.3.7
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+December 17, 2001
+
+templates/gsas_ALL.temp
+  Default smoothing changed to type 2 (32 32 0).
+--------------------------------------------------------------------------
+December 14, 2001
+
+fortran/uGsasRead.f
+  Support for GSAS file type ESD added.
+--------------------------------------------------------------------------
+December 12, 2001
+
+File.pm, body.pm
+  The instrument parameter file can now also be selected via right click.
+
+PDFgetN.pl, Hist.pm, body.pm, rprepgsas.pm
+  New GSGS prepstep integrated.
+
+templates/*
+  New file gsas_ALL.temp added. File npd_MLNSC.temp fixed.
+--------------------------------------------------------------------------
+December 6, 2001
+
+fortran/many_files
+  New prepstep GSASPREP added. It is capable with dealing with CONST
+  binning (IPNS) and TIME_MAP (LANSCE) time-of-flight coding. It uses
+  all the nice features of the new prepsteps. Will replace HIPDPREP at
+  some stage. Long term goal- only GSASPREP as prepstep.
+
+  Needs integrating in GUI !
+--------------------------------------------------------------------------
+November 9, 2001
+
+PDFplot.pl
+  Missing line for S(Q)=1 and Laue term restored.
+
+PDFgetN.pl
+  Radiobutton 'load template' now gets automatically selected when 
+  selecting a template file.
+
+body.pm, PDFgetN.pl, PDFplot.pl
+  Background of checkboxes and radiobuttons fixed.
+--------------------------------------------------------------------------
+November 5, 2001
+
+File.pm, body.pm, rprep*.pm
+  Now one can right click on the file name field and select run files
+  from a list. This list also contains the run title extracted from the
+  run file. 
+--------------------------------------------------------------------------
+August 29, 2001
+
+body.pm
+  Modified to automate optimization of beta using Glow. The difference 
+  between PDFs optimized this way and by hand is less than 1% (as found
+  with a direct Rval). Now to make the dialog nice and perty.
+--------------------------------------------------------------------------
+August 28, 2001
+
+PDFqual.pl
+  Modified Glow to reflect what is found in the quality paper.
+
+bin2asc/pdf2asc.f
+  Changed to calculate quality factor Glow. Displays quality factor and 
+  calculated rhofit. Glow calculated here and with PDFqual are slightly
+  different. The difference of beta between the two optimized PDFs is 
+  ~0.0001, which is nothing to worry about.
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+PDFgetN Changes 1.3.5 -> 1.3.6
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+August 10, 2001
+
+fortran/hipd_lambda.f
+  Problem occured with DIFA=0 - changed to use d=T/DIFC in those cases !
+--------------------------------------------------------------------------
+June 28, 2001
+
+PDFqual.pl
+  Added the criteria S_lim, which is the dispersion between low-Q and 
+  high-Q limits (it should be 1+L). This is the poor man's method. At some
+  point we should improve upon it.
+--------------------------------------------------------------------------
+June 15, 2001
+
+PDFqual.pl
+  Found a minus sign error in a derivation. Now the integral of Q^2(S-1) 
+  has the correct theoretical value reported.
+--------------------------------------------------------------------------
+June 7, 2001
+
+PDFqual.pl
+  Changed to properly deal with possible divisions by zero (don't do the
+  math).
+--------------------------------------------------------------------------
+May 11, 2001
+
+PDFqual.pl
+  Changed to make it more robust to filetype. Also added a command line
+  parameter to change Rlow.
+--------------------------------------------------------------------------
+May 9, 2001
+
+PDFqual.pl
+  Changed to accomodate the new quality criteria in accordance with the
+  upcomming JAC papers. It is really cool that the factors work out now.
+
+body.pm
+  Changed dimensions of 'Analyze' dialog to accomodate the new printout
+  of PDFqual.pl.
+--------------------------------------------------------------------------
+May 7, 2001
+
+PDFgetN.pl
+  Changed nogui mode to reread the temporary history file once update has
+  been run. Takes care of formated printing wierdness to make reproducible
+  PDFs.
+
+body.pm
+  Changed makeSOQ() to reread the temporary history file once update has
+  been run. Related to PDFgetN.pl change.
+--------------------------------------------------------------------------
+April 19, 2001
+
+PDFplot.pl
+  Path problem when starting KUPLOT under Windows 95/98 fixed.
+
+File.pm
+  Problem with \ in path in regex to determine path and filename
+  fixed.
+
+body.pm
+  PDFplot.pl is now called via perl $runcmd as done for PDFqual.pl
+  already - this makes it work for Windows 95/98 as well ;-)    
+--------------------------------------------------------------------------
+April 9, 2001
+
+mkWin.pl
+  It turns out *.asc files in the tutorial do not work when converted
+  to DOS CR/LF - don't ask me why ;-)
+
+PDFgetN.pl, File.pl
+  Some mess with setting the path and extracting the filename fixed. New
+  subroutine &File::setpath now takes over that task.
+
+  Also in -nogui mode, the cleanup routine was never called, so it
+  appeared defaults and -keep switch were not working - fixed.
+
+File.pm
+  Working directory is now initial directory in saving file dialog.
+
+body.pm
+  PDFqual is now only called if .sq file exists !
+
+Hist.pm
+  In cases with elements but no Laue term in the history file, the
+  Laue term is calculated.
+
+help.pm
+  Build date added to 'about' dialog.
+--------------------------------------------------------------------------
+April 6, 2001
+
+PDFgetN.pl
+  The program now determines and changes into working directory also for
+  history files given on the command line and in NOGUI mode. This was so
+  far only done for files selected in startup screen.
+
+PDFgetN.lsb
+  Updated for version 1.3.6
+--------------------------------------------------------------------------
+April 4, 2001
+
+table.pm
+  Changed to calculate the normalized Laue term when updating elements.
+
+fortran/soqd.f
+  Updated to allow for applying an a and b to each bank.
+--------------------------------------------------------------------------
+April 3, 2001
+
+rsoqd.pm
+  Put in the hooks to change a and b for each bank.
+
+Hist.pm
+  Added in bank-by-bank a and b information. Added normalized Laue term.
+
+body.pm
+  Changed the calling of PDFplot to include the normalize Laue term.
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+PDFgetN Changes 1.3.4 -> 1.3.5
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+
+PDFgetN.pl
+  Default for tutorial location changed - in case install.pm is not used !
+  Also xpdf::build now contains the build date which is displayed at
+  startup. This date is entered when mkdistr.* is called ! That way we
+  can keep track of different version within one version number (e.g.
+  1.3.5) ..
+
+mkdistr.win
+  Script creates all files for WINDOWS installer and changes text files
+  to DOS CR/LF.
+
+mkdistr.unix
+  Script creates all files for UNIX tar file and changes text files
+  to UNIX CR/LF.
+--------------------------------------------------------------------------
+March 30, 2001
+
+File.pm
+  Save dialog now only offers HST extension - some users were confused ;-)
+--------------------------------------------------------------------------
+March 29, 2001
+
+damp.f
+  Changed the modEqn to be S'(Q)=A*S(Q)+B+C*Q
+--------------------------------------------------------------------------
+March, 28, 2001
+
+fortran/uDetermineRange1.f
+  Matthias forgot to initialize some variables - so when there were no
+  leading/trailing 0.0 in a bank the prepstep was crashing -> fixed !
+--------------------------------------------------------------------------
+March, 21, 2001
+
+fortran/damp.f
+  Errors in S(Q) were not modified by factor A -> fixed !
+--------------------------------------------------------------------------
+March, 9, 2001
+
+body.pm, Hist.pm
+  A new GUI field for the instrument parameter file has been added.
+  It only appears for $GLOBE::prepName = hipd !
+--------------------------------------------------------------------------
+March, 7, 2001
+
+bin2asc/pdf2asc.f
+  Array size for G(r) adjusted to maximum array size in FT !
+
+body.pm, rft.pm
+  ftMaxR and ftNumPoint are now part of the GUI. Error message added
+  for ftNumPoint exceeds 15000 (current limit in ft and pdf2asc !)
+--------------------------------------------------------------------------
+March, 6, 2001
+
+body.pm
+  The way the username is determined fixed !
+--------------------------------------------------------------------------
+March, 5, 2001
+
+PDFgetN.pl, body.pm, File.pm
+  Directory handling inproved. Current working directory is now also
+  displayed in GUI.
+
+fortran/*prep.f, fortran/*out.f
+  Problem with filenames of length != 8 characters fixed !
+--------------------------------------------------------------------------
+February, 27, 2001
+
+neutron.table
+  Mass for B was wrong - fixed thanks to Emil & Pete ..
+
+PDFgetN.pl
+  When selecting a file, the current working directory is now set
+  to the path where the file is found.
+
+File.pm, PDFgetN.pl
+  Some error checking for working directory added.
+
+templates/npd_MLNSC.temp
+  Template for NPD added
+--------------------------------------------------------------------------
+February, 26, 2001
+
+body.pm
+  New drop down menu contains 'actions' such as plot, analyse, edit all
+  and show logs/inputs rather than individual buttons.
+
+  PDFworking locks windows version - if $^O contains /win/i PDFworking.pl
+  is NOT called any more.
+
+PDFqual.pl
+  Integrated Pete's current version, fixed problem with Qlow !
+  GUI input added for RHO0, QLOW and RLOW in PDFqual dialog.
+
+PDFgetN.pl
+  PDFgetN now changes directory to $GLOBE::workdir (if defined) before
+  bringing up startup dialog - this way we search for .temp.hst in the
+  correct spot (al least initially).
+
+  Problem with output filename for -nogui mode fixed.
+
+install.pm
+  Some PDF*.orig were not cleaned up -> fixed. Also perl location should
+  only be added to .pl files ..
+
+bin2asc/soq2asc.f
+  If starting Q for average is < 1 then Qlow=Qlow*Qmax - as in PDFqual.pl
+--------------------------------------------------------------------------
+February, 24, 2001
+
+install.pm
+  Now links PDFqual.pl into the bin directory.
+
+PDFqual.pl
+  Change the help message information. Now -help gives the command line 
+  parameters while -info describes what they mean. Also the printout had
+  an error in it when it was executed with rho0 specified, oops.
+--------------------------------------------------------------------------
+February, 23, 2001
+
+PDFgetN.pl, colors.pm
+  The working directory is now also saved with the other defaults.
+  Also if $HOME is undefined the local defaults directory becomes
+  the current directory.
+
+body.pm
+  New button 'Analyse' will run PDFqual on the current run file and
+  display result and helptext in dialog box.
+
+PDFqual.pl
+  New switch -info shows only the help description text but no
+  usage for output in PDFgetN. Also help text reformatted to shorter
+  line width.
+
+install.pm
+  Some fixing in cleaning up part of installer - nice it installs
+  all PDF* anyway ;-)
+
+PDFplot.pl
+  Still some bugs to be fixed - now it might work on both OS.
+--------------------------------------------------------------------------
+February, 22, 2001
+
+PDFplot.pl
+  Some funny handshaking problems under LINUX fixed (again).
+
+bin2asc/int2asc.f
+  Skip first point, apparently you only want to go to nchan-1 !
+
+install.pm
+  Some changes thanks to Pete to have it work again on LINUX ..
+--------------------------------------------------------------------------
+February, 8, 2001
+
+PDFplot.pl
+  Handshaking with KUPLOT improved - so it works even in NT now ;-)
+
+rdamp.pm
+  Bug in error checking fixed (Pete did it in fact ;-))
+--------------------------------------------------------------------------
+February, 6, 2001
+
+PDFgetN
+  Version number updated.
+
+fortran/hipd_read.f
+  Number of banks is now determined dynamically so it works for NPD
+  data as well.
+
+PDF*.pl
+  Files renamed to extension *.pl (so they are associated with PERL
+  under Windows NT).
+
+PDFgetN.pl, body.pm, File.pm
+  Startup dialog now allws one to specify the working directory ..
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+PDFgetN Changes 1.3.3 -> 1.3.4
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+December, 14, 2000
+
+bin2asc/pdf2asc.f, Hist.pm, rft.pm
+  Integral |rG(r)| up to $GLOBE::ftIntMaxR added to GR file -> used
+  by PDFqual utility ..
+--------------------------------------------------------------------------
+November, 27, 2000
+
+bin2asc/int2asc.f
+  Format for Qmin and Qmax extended to f6.2 for those Q>100 A**-1
+  measurements !
+--------------------------------------------------------------------------
+November, 15, 2000
+
+bin2asc/soq2asc.f, bin2asc/pdf2asc.f
+  New feature added - average S(Q) over given high Q range and integral
+  Q**2(S(Q)-1) is written in ASC output file (#P ...). For GR files
+  the integral rG(r) was added to output file.
+
+PDFgetN
+  Version number increased to 1.3.4 ..
+--------------------------------------------------------------------------
+September, 29, 2000
+
+PDFgetN
+  A 'require Tk::DialogBox' added.
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+PDFgetN Changes 1.3.2 -> 1.3.3
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+09/18/2000 : Installed on LINUX cluster
+--------------------------------------------------------------------------
+September, 18, 2000
+
+PDFgetN
+  Command line parameters now overwrite .pdfgetn defaults !
+--------------------------------------------------------------------------
+September, 17, 2000
+
+rblend.pm, Hist.pm
+  Q limits are now written with %.f2 format !
+
+body.pm
+  New function (buttons Qmin and Qmax) allows the user to set the 
+  individual Q limits for all banks to a given wavelength range.
+--------------------------------------------------------------------------
+September, 15, 2000
+
+bin2asc/int2asc.f, bin2asc/soq2asc.f
+  Changes to ASCII files are sorted in increasing Q values.
+--------------------------------------------------------------------------
+August, 14, 2000
+
+templates/gppd_IPNS.temp
+  Template updated using G(r) file from Matthias' measurement at GPPD.
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+PDFgetN Changes 1.3.1 -> 1.3.2
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+August, 9, 2000
+
+fortran/uGladReadBank1.f
+  Matthias extended routine to work with different ASCII versions 
+  of NORM files.
+--------------------------------------------------------------------------
+July, 31, 2000
+
+PDFgetN, LICENSE.txt manual/pdfgetn.ps
+  Reference to PDFgetN JAC paper updated !
+--------------------------------------------------------------------------
+07/11/2000 : Installed on LINUX and slapper, archive updates !
+--------------------------------------------------------------------------
+July, 11, 2000
+
+raw2asc/ipns/sepdbtoa.c
+  Some output formats extended (no real change) ..
+
+fortran/parameters.inc
+  Array size for detector table extended from 400 to 500 to allow some
+  old data to be processed (different histogramming ..)
+
+fortran/uKillPeaks1.f
+  Some minor problems with compilation on SLAPPER fixed.
+--------------------------------------------------------------------------
+June, 29, 2000
+
+uArielReadBank1.f
+  Changed to new SPEC fromat from ARIEL and fixed some minor bugs 
+  showing up during GEM experiment ..
+--------------------------------------------------------------------------
+May, 31, 2000
+
+r*.pm
+  Calls to external FORTRAN code changed to work on UNIX and WINDOWS.
+
+body.pm
+  `whoami` call replaces by 'getlogin' perl native - Windows again ;-)
+
+Stdio.pm
+  Call to 'date' in getDate replaced by Perl native 'localtime' - first
+  step to a Windows version (or even MAC) ;-)
+
+fortran/Makefile.win, bin2asc/Makefile.win
+  Makefiles for WINDOWS executables using gcc/g77 cross compiler.
+--------------------------------------------------------------------------
+05/30/2000 : Installed on LINUX and slapper, archive updates !
+--------------------------------------------------------------------------
+May, 30, 2000
+
+body.pm, help.pm, PDFgetN
+  Updates version number and removed some problems so PDFgetN -nogui
+  can really run without X connectiuon ;-)
+
+fortran/ublend4.f
+  Trying to calculate a d-value for Q=0 upset the program - fixed
+--------------------------------------------------------------------------
+older changes not logged ! - main difference V peak removal !
+--------------------------------------------------------------------------

@@ -1,0 +1,22 @@
+--------------------------------------------------------------------
+Ideas for PDFgetN extensions
+--------------------------------------------------------------------
+
+(1) Automatic bank matching in BLEND: 
+    Fit theoretical expression to S(Q) and then match ..
+
+(2) GO button:
+    Write generic RUN routine (calls $app::writeInput etc ..)
+    that only runs the application if
+
+      - output file does not exist
+      - input file has changed (make *.inp.old ..)
+      - a step upstream was executed
+
+    Integrate nice progess GUI ..
+
+(3) Help menu entry to check for PDFgetN newest version (FTP)
+
+
+(4) Integrate PDFFIT ?
+

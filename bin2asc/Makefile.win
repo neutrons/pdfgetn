@@ -1,0 +1,31 @@
+#######################################################################
+# Simple makefile to compile and install the bin2asc utilities ..
+#######################################################################
+
+F77  =  g77
+FFLAGS  = -O0 -fno-f2c
+LDFLAGS =
+
+INSTALL_DIR  = ../binary
+INSTALL_MOD = 755
+
+all: pdf2asc.exe int2asc.exe soq2asc.exe soq2gsa.exe
+
+pdf2asc.exe: pdf2asc.o
+	$(F77) -o pdf2asc.exe pdf2asc.o $(LDFLAGS)
+int2asc.exe: int2asc.o
+	$(F77) -o int2asc.exe int2asc.o $(LDFLAGS)
+soq2asc.exe: soq2asc.o
+	$(F77) -o soq2asc.exe soq2asc.o  $(LDFLAGS)
+soq2gsa.exe: soq2gsa.o lenstr.o soqread.o invnorm.o maketmap.o readiparm.o
+	$(F77) -o soq2gsa.exe soq2gsa.o lenstr.o soqread.o invnorm.o maketmap.o readiparm.o $(LDFLAGS)
+
+.f.o:
+	$(F77) -c $(FFLAGS) $<
+
+install: pdf2asc.exe int2asc.exe soq2asc.exe soq2gsa.exe
+	cp *.exe $(INSTALL_DIR)
+
+clean:
+	rm -f *~ *.exe *.o
+

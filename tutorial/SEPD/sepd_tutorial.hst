@@ -1,0 +1,61 @@
+History written: Tue Jan 11 16:06:02 EST 2000
+produced by peterson
+##### Run Information     runCorrection=T
+prep=sepd     machine=sepd
+run=sepd9085     background=sepd9062
+smooth=2    smoothParam=10 10 0
+in beam: radius=.5559     height=3.5
+temp=300     runTitle=PDFgetN Tutorial - La(0.75)Ca(0.25)MnO(3)
+
+##### Vanadium     runCorrection=T
+run=sepd9061     background=
+smooth=2    smoothParam=10 10 0
+in beam: radius=.3175     height=3.5
+
+##### Container     runCorrection=T
+run=sepd9060     background=sepd9062
+smooth=2    smoothParam=10 10 0
+wallThick=.0127     atomDensity=0.072110
+atomic information: scattCS=5.100     absorpCS=5.080
+
+##### Sample Material     numElements=4
+Element relAtomNum atomMass atomCoherCS atomIncoherCS atomAbsorpCS
+   O        0.6000   15.999      4.2320        0.0008      0.00019
+  Ca        0.0500   40.078      2.7800        0.0500      0.43000
+  Mn        0.2000   54.931     -1.7500        0.4000     13.30000
+  La        0.1500  138.905      8.5300        1.1300      8.97000
+density=6.0     effDensity=2.75
+
+##### Banks=6
+bank   angle   blendQmin   blendQmax       (0.0 means no info)
+  1    139.7         2.2     46.0   
+  2    150.0         2.3     47.3   
+  3     90.0         1.7     34.5   
+  4     60.0         1.2     24.3   
+  5     14.6         0.3      6.1   
+  6     29.8         0.6     12.1   
+
+##### Program Specific Information
+## Ft     calcError=1     (1 for true, 0 for false)
+numRpoints=2000     maxR=20.0
+## Damp     Qmin=0.30     Qmax=24     startDampQ=24
+dampFuncType=0     modEqn=1.0*S(Q) +0.0 +0.0*Q     dampExtraToZero=0
+## Blend     numBanks=6     banks=1,2,3,4,5,6
+## Soqd     minProcOut=0
+samPlaczek=T     vanPlaczek=T     smoothData=0     modifyData=1
+## Corps     minProcOut=0     numBanksMiss=0
+
+##### prepsepd     prepOutput=1     numBanksMiss=0
+firstMonitor=5     secondMonitor=7     histogramNum=1
+neutFunc=1     neutFrac=0.04
+neutMinLambda=0.25     neutMaxLambda=5.27
+neutStartLambda=0.0     neutEndLambda=0.0
+numCal=5
+Angle        DifC       DifA        Tzero
+  139.69     7356.98     1.45000    -1.84000
+  150.00     7570.45     1.40000    -2.83000
+   90.00     5578.08     3.91000     1.75000
+   60.00     3904.24    10.77000    13.04000
+   30.00     2025.77     0.00000     0.00000
+numBanksAdd=0
+numBanksMult=0

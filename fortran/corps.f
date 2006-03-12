@@ -1,0 +1,1195 @@
+C*****************************************************************************
+C*
+C*
+C* PROGRAM CORPS
+C*    CORRECTIONS FOR ELEMENTS, MODIFIED CELL
+C*    VERSION FOR PULSED SOURCE
+C*  MODIFIED FOR NEW VANADIUM CROSS SECTIONS BY DLP July 1986
+C*  MODIFIED...DOESN'T RECALCULATE COEFFICIENTS FOR PREVIOUSLY
+C*             CALCULATED ANGLES..18 JUNE 87 BY MDN
+C* Modified M. Hirscher to trap divide by zero error in VD01A (10/88)
+C*
+C* output file renamed to '.cor' -- WCT
+C*
+C* Modified by Wayne C. Tonjes 1995 for UNIX
+C*
+C* $Id: corps.f,v 1.1 2006/03/12 09:59:25 tproffen Exp $
+C*
+C* $Log: corps.f,v $
+C* Revision 1.1  2006/03/12 09:59:25  tproffen
+C* Initial revision
+C*
+c Revision 1.2  1997/04/13  15:58:23  billinge
+c removed DEC fortran
+c Changed to read input in free format (tep 01/2000)
+c
+C*
+C*****************************************************************************
+
+
+	INCLUDE 'const.inc'
+	INCLUDE 'parameters.inc'
+       EXTERNAL CALP3,CALP4
+       REAL*4 RTITL(20),B(20),BB(20),
+     1    XLADD(N_CHN),SS(N_CHN),DSS(N_CHN),
+     2    KE,C(20),EM(20),SCOH(20),SINC(20),SABS(20)
+       INTEGER*4 MSGP(10)
+       REAL*4 LAMBDA(10),MUTV(10),MUTS(10),MUTC1(10),MFACS(10),MFACV(10)
+       LOGICAL LVAN,LSAM,LCON
+       REAL*4 AFACS(4,10),AFACV(10),P1(10),P2(10),
+     1   RSIGV(10),RSIGS(10),Q(10),COEFF(4),
+     2   ER(10),DEV(10),POUT(10),MBYM,MBYM2
+       CHARACTER*4 EXD,EXL,PRNT*10,FILE*40,INAME,RUNN,
+     1	   XNAM(20),RNAM(5)
+       COMMON/PAR/PIBY18,ANG,NCH,LAMBDA
+       COMMON/VAN/RVAN,MUTV,AFACV
+       COMMON/SAM/RSAMP,TC1,MUTS,MUTC1,AFACS
+       COMMON/POWELL/LFIT,W(1500)
+       COMMON/DATA/XFIT(50),PIN(50)
+       COMMON/CROSS/KE,SIGCS,SIGSS,SIGAS,ATWTS,MBYM,MBYM2,E,EM,SCOH,
+     1   SINC,SABS,B,BB,C,EB,EBB
+       PARAMETER (EXD='.dat',EXL='.lpt')
+	REAL*4 OLDTHT(10),CX(8,5,4)
+       DATA PRNT/'          '/
+
+C
+C
+108	FORMAT(/' COEFF',I2,' : ',4F10.6)
+109	FORMAT(I5,3F10.5)
+110   FORMAT(/'  VANADIUM'//'       LAMBDA     Q       1 + MS',
+     1 '     A(V,V)'/)
+111   FORMAT(2X,2(4X,F6.2),5(4X,F6.3))
+112   FORMAT(//' SAMPLE CONTAINER PARAMETERS'//
+     1 ' WALL THICKNESS',5X,F7.3,'  CM.',7X,
+     2 'NUMBER DENSITY',11X,F7.4,'  A-3'/
+     3 ' SCATTERING C/S',4X,F7.2,'  BARNS',6X,
+     4 'ABSORPTION C/S',' (1.8 A) ',F7.2,'  BARNS')
+113   FORMAT(//' SAMPLE PARAMETERS '//
+     1 ' HEIGHT',13X,F7.3,'  CM.',7X,
+     2 'RADIUS   ',15X,F7.3,'  CM.'/
+     3 ' ATOMIC WEIGHT ',4X,F7.2,12X,
+     4 ' DENSITY ',16X,F7.3,'  GM./CM.&3'
+     5 //' COHERENT C/S        ',F6.3,'  BARNS',4X,
+     6 ' INCOHERENT C/S     ',6X,F6.3,'  BARNS'/
+     7 38X,' ABSORPTION C/S (1.8 A)  ',F6.3,'  BARNS'//)
+114	FORMAT(/'  SAMPLE'//
+     1 '       LAMBDA     Q        1 + MS    A(S,S)    A(S,SC)',
+     2 '   A(C,C)    A(C,SC)'/)
+115   FORMAT(' PVAN '/10F10.5/)
+116   FORMAT(/' P3(MULTIPLE)  '/10F10.5/' P1(ABSORPTION)'/
+     1 10F10.5/' P2(CONTAINER) '/10F10.5/)
+122   FORMAT(4A2)
+123   FORMAT(/'    N   LAMBDA     CALC      FIT'/)
+124   FORMAT(//' OUTPUT CORRECTIONS FILE: ',A)
+125   FORMAT(8F10.5)
+126   FORMAT(5A4)
+129   FORMAT('  VANADIUM PARAMETERS'//
+     1 ' HEIGHT',13X,F7.3,'  CM.',7X,
+     2 'RADIUS   ',15X,F7.3,'  CM.'/
+     3 ' ATOMIC WEIGHT ',4X,F7.2,12X,
+     4 ' DENSITY  ',15X,F7.3,'  G/CC',5X,/
+     5 ' INCOHERENT C/S    ',F7.2,'  BARNS ',5X,
+     6 'ABSORPTION C/S',' (1.8 A) ',F7.2,'  BARNS')
+  994 FORMAT(1X,19A4)
+  999 FORMAT(80A1)
+1000	FORMAT(20A4)
+1001	FORMAT(4A4)
+1002	FORMAT(8F10.0)
+1003    FORMAT('LIQUID DIFFRACTION DATA'/' ',5A4/' ',20A4)
+1010	FORMAT('SUBGROUP',I2,' TWOTHT=',F8.3,' DIST=',F8.3/
+     2 ' TZERO=',F5.0,' CHNWID=',F5.0,' NCH=',I5)
+1011	FORMAT(' SUBGROUP',I2,' TWOTHT=',F8.3,' XF=',F10.5)
+1012	FORMAT(' SIGC=',F8.4,' SIGS=',F8.4,' SIGA=',
+     1 F8.4,' V=',F8.5,' D=',F8.5)
+1013	FORMAT(14X,' SIGS=',F8.4,' SIGA=',F8.4,
+     1 ' V=',F8.5,' D=',F8.5)
+1018	FORMAT(' KOR=',I2,' P=',4F10.6)
+1021	FORMAT(I5,5F10.5)
+ 1034 FORMAT(' MBYM=',F10.6,' MBYM2=',F10.6,' TEMP=',F10.2)
+C
+C   SET UP PARAMETERS & INITIALISE ARRAYS
+C
+      
+      DO I=1,10
+        MSGP(I)=0
+      ENDDO
+C
+      PIBY18=0.17453292
+      DANGLE=38.1*1.112/150.0/150.0
+      ATWTV=50.95
+      SIGIV=5.20
+      SIGAV=5.08
+      TEMPV=23.
+      RHOV=6.1
+	DO I=1,10
+      	  DO N=1,4
+      	    AFACS(N,I)=1.
+	  ENDDO
+         AFACV(I)=1.
+         MFACS(I)=1.
+         MFACV(I)=1.
+	ENDDO
+      PRINT*,'TYPE FOUR-LETTER INSTRUMENT NAME'
+      READ(5,1000)INAME
+      PRINT*,'TYPE RUN FILENAME'
+      READ(5,'(A)') FILE
+	OPEN(UNIT=13,FILE=FILE,STATUS='OLD',
+     1      FORM='UNFORMATTED',ACCESS='SEQUENTIAL')
+	READ(13,END=998)RUNN,RNAM,RTITL,NSGD
+	PRINT *,RNAM
+      WRITE(6,1003)RNAM,RTITL
+      PRINT *,'TYPE MISS,NPRINT'
+      READ(5,*)MISS,NPRINT
+      WRITE(6,'(''NSGD='',I2,'' NPRINT='',I2)')MISS,NPRINT
+	DO M=1,MISS
+	  PRINT *,'TYPE MSGP'
+	  READ(5,*) MSGP(M)
+	ENDDO
+C
+C  INPUT FILE NAME & OPEN STREAM FOR LPT 
+C
+	PRINT *,' TYPE OUTPUT FILE NAME (default extension=.cor)'
+	READ(5,'(A)') FILE
+	PRINT*, FILE
+	OPEN(UNIT=10,FILE=FILE,STATUS='unknown')
+	INQUIRE(UNIT=10,NAME=FILE)
+C  INPUT GENERAL & VANADIUM PARAMETERS
+	PRINT *,' VANADIUM CORRECTIONS? T/F'
+	READ(5,'(L1)')LVAN
+	IF (LVAN) THEN
+C  START VANADIUM CORRECTIONS
+	   PRINT *,' TYPE HVAN,RVAN'
+      	   READ(5,*)HVAN,RVAN
+	ENDIF
+
+	PRINT *,' SAMPLE CORRECTIONS? T/F'
+      READ(5,'(L1)')LSAM
+      IF (LSAM) THEN
+C  START SAMPLE & CONTAINER CORRECTIONS
+	PRINT *,' TYPE HSAMP,RSAMP,RHOS,KE'
+        READ(5,*)HSAMP,RSAMP,RHOS,KE
+        CALL AVER
+	PRINT *,' CONTAINER? T/F'
+        READ(5,'(L1)')LCON
+        IF(.NOT.LCON)GOTO 31
+	  PRINT *,' TYPE TC,N.DENS,SCAT,ABS'
+          READ(5,*)TC1,DENTC,TCSS,TCAS
+
+c------End of inputs here ------------------------------------
+c  write everything to log file
+	  PRINT *, 'run no from .int:',RUNN
+          PRINT 1003,RNAM,RTITL
+       	  DO IPOO = 1,MISS
+	       PRINT *, ' Bank ',MSGP(IPOO),' will be missed.'
+	  ENDDO
+	  WRITE(6,'(/,A)') 'Sample composition data: '      
+          DO I = 1,10
+	     IF(C(I) .EQ. 0.0) GOTO 458
+             WRITE(6,'(5X,I2,3X,7F10.4)') 
+     1          I,C(I),B(I),BB(I),EM(I),SCOH(I),SINC(I),SABS(I)
+          ENDDO
+458       WRITE(6,'(/,A)') 'Sample averages: '      
+          WRITE(6,'(4X,1H<,I2,1H>,2X,F6.2,5F9.4)')
+     1           NUM,ATWTS,EB,EBB,SIGSS,SIGCS,SIGAS
+           WRITE(6,'(5X,2G12.4//)') MBYM,MBYM2
+  
+
+           WRITE(6,129)HVAN,RVAN,ATWTV,RHOV,SIGIV,SIGAV
+           WRITE(6,113)HSAMP,RSAMP,ATWTS,RHOS,SIGCS,SIGIS,SIGAS
+           WRITE(6,112)TC1,DENTC,TCSS,TCAS
+	   WRITE(6,124) '   '
+           WRITE(6,'(A)') FILE
+
+	   PRINT *, 'Done reading input information'
+	   PRINT *, '*********************************************'//
+     1           '*******************************'
+
+31          SIGIS=SIGSS-SIGCS
+         
+	  VOVAN=RVAN*RVAN*HVAN
+	  DEVAN=0.60233*RHOV/ATWTV
+	  VOSAM=RSAMP*RSAMP*HSAMP
+	  DESAM=0.60233*RHOS/ATWTS
+	ENDIF
+32	WRITE(10,994)INAME
+      WRITE(6,994)(RTITL(N),N=1,19)
+      WRITE(10,994)(RTITL(N),N=1,19)
+      WRITE(10,994)RNAM
+      WRITE(10,1013)SIGIV,SIGAV,VOVAN,DEVAN
+      WRITE(10,1012)SIGCS,SIGSS,SIGAS,VOSAM,DESAM
+      WRITE(10,1034)MBYM,MBYM2,KE
+C
+C	initialize CX(group,kor,coeff)
+	DO JROUP=1,8
+	  DO KOR=1,5
+	    DO KOEFF=1,4
+		CX(JROUP,KOR,KOEFF)=-999.
+	    END DO
+	  END DO
+	END DO
+
+      DO 200 J=1,NSGD
+
+	IF(J.EQ.1)KIP=1
+	READ(13,END=998)JSG,TWOTHT,DIST,XF,NCH,TZERO,CHNWID
+	OLDTHT(J)=TWOTHT
+	DO N=1,NCH
+	   READ(13,END=998)XLADD(N),SS(N),DSS(N)
+	ENDDO
+	IF(MISS.NE.0)GOTO 39
+	IF(J.EQ.MSGP(KIP))GOTO 38
+	GOTO 39
+38	KIP=KIP+1
+	GOTO 200
+39      ANG=0.05*TWOTHT*PIBY18
+	THETAB=TWOTHT*PI/180./2.
+	SNTH=4.*PI*SIN(THETAB)
+      WRITE(6,1010)JSG,TWOTHT,DIST,TZERO,CHNWID,NCH
+	WRITE(10,1011)JSG,TWOTHT,XF
+	DO JJ=1,(J-1)  !if angle repeated, prints old info
+	    IF (ABS(ABS(TWOTHT)-ABS(OLDTHT(JJ))).LE. 0.1) THEN
+	       PRINT *,'COEFFICIENTS PREVIOUSLY CALCULATED FOR THIS ANGLE'
+	       PRINT *,'WRITING PREVIOUSLY CALCULATED VALUES.............'
+	       DO KOR=1,5
+		  COEFF(1)=CX(JJ,KOR,1)
+		  COEFF(2)=CX(JJ,KOR,2)
+		  COEFF(3)=CX(JJ,KOR,3)
+		  COEFF(4)=CX(JJ,KOR,4)
+		  IF (COEFF(1).NE.-999.) WRITE(10,1018)KOR,COEFF
+	       ENDDO
+	       GOTO 200
+	    ENDIF
+	ENDDO
+
+	XL1=0.1
+	IF (XLADD(1) .LT. 0.101) XL1=0.05
+	N1=NINT(XLADD(1)/XL1)
+	XLMIN=N1*XL1
+	N1=NINT(XLADD(NCH)/0.2)
+	XLMAX=(N1+1)*0.2
+	NCH=10
+	XLD=(XLMAX-XLMIN)/(NCH-1)
+	DO N=1,NCH
+	  XFIT(N)=XLMIN+(N-1)*XLD
+	  LAMBDA(N)=XFIT(N)
+	  Q(N)=SNTH/LAMBDA(N)
+	ENDDO
+	IF(.NOT.LVAN)GOTO 56
+        DO N=1,NCH
+           SIGTV=SIGIV + SIGAV*LAMBDA(N)/1.8
+           RSIGV(N)=SIGIV/SIGTV
+           MUTV(N)=DEVAN*SIGTV
+	ENDDO
+        CALL SCATI(RVAN,HVAN,MFACV,MUTV,RSIGV)
+	CALL ACYLV
+      IF (NPRINT .GT. 1) WRITE(6,110)
+      DO 55 I=1,NCH
+      IF (NPRINT .GT. 1) WRITE(6,111)LAMBDA(I),Q(I),MFACV(I),AFACV(I)
+55    CONTINUE
+C
+56	IF(.NOT.LSAM)GOTO 66
+      DO 60 N=1,NCH
+      SIGTS=SIGSS + SIGAS*LAMBDA(N)/1.8
+      RSIGS(N)=SIGSS/SIGTS
+      IF(.NOT.LCON)GOTO 60
+      TCTS=TCSS + TCAS*LAMBDA(N)/1.8
+      MUTC1(N)=DENTC*TCTS
+60    MUTS(N)=DESAM*SIGTS
+      CALL SCATI(RSAMP,HSAMP,MFACS,MUTS,RSIGS)
+      IF(LCON)CALL ACYLI(NPRINT)
+      IF(.NOT.LCON)CALL ACYLS
+      IF(LCON)IFC=2
+      IF(.NOT. LCON )IFC=1
+	IF (NPRINT .GT. 1) WRITE(6,114)
+      DO 65 I=1,NCH
+	P1(I)=AFACS(IFC,I)
+      IF(LCON)P2(I)=AFACS(4,I)/AFACS(3,I)
+      IF (NPRINT .GT. 1) 
+     1     WRITE(6,111)LAMBDA(I),Q(I),MFACS(I),(AFACS(K,I),K=1,4)
+65	CONTINUE
+C OUTPUT SECTION
+66    IF(.NOT.LSAM.AND..NOT.LVAN)GOTO 200
+	DO 90 KOR=1,5
+C  KOR=1 VAN ABS; KOR=2  VAN MS 
+C  KOR=3 SAM ABS ; KOR=4 CONT ; KOR=5 SAM MS
+	IF(KOR.GT.2)GOTO 70
+	IF(.NOT.LVAN)GOTO 200
+70	IF(.NOT.LSAM)GOTO 200
+	DO K=1,NCH
+	  IF(KOR.NE.4)GOTO 75
+	  IF(.NOT.LCON)GOTO 90
+75	  ER(K)=0.001
+	  IF(KOR.EQ.1)PIN(K)=AFACV(K)
+	  IF(KOR.EQ.2)PIN(K)=MFACV(K)
+	  IF(KOR.EQ.3)PIN(K)=P1(K)
+	  IF(KOR.EQ.4)PIN(K)=P2(K)
+	  IF(KOR.EQ.5)PIN(K)=MFACS(K)
+	ENDDO
+	COEFF(1)=PIN(1)
+	COEFF(2)=(PIN(2)-PIN(1))/(LAMBDA(2)-LAMBDA(1))
+	COEFF(3)=0.
+	COEFF(4)=0.
+	CALL VA02A(CALP4,NCH,4,DEV,COEFF,ER,50.,10,20)
+	IF (NPRINT .GT. 0) WRITE(6,108)KOR,COEFF
+	IF (NPRINT .GT. 1) WRITE(6,123)
+	DO 85 K=1,NCH
+85	POUT(K)=PIN(K)+DEV(K)
+
+	IF (NPRINT .GT. 1) THEN
+	   DO K = 1,NCH
+	      WRITE(6,109) K,LAMBDA(K),PIN(K),POUT(K)
+	   ENDDO
+	ENDIF
+	WRITE(10,1018)KOR,COEFF
+	DO KOEFF=1,4
+	  CX(J,KOR,KOEFF)=COEFF(KOEFF)
+	ENDDO
+90	CONTINUE
+200	CONTINUE
+  998 WRITE(10,1019) HVAN,RVAN,HSAMP,RSAMP,TC1,ATWTS
+ 1019 FORMAT(5X,7F10.5)
+      DO 210 I=1,20
+      IF(ABS(C(I)).LE.0.001) GO TO 211
+      WRITE(10,1019) C(I),B(I),BB(I),EM(I),SCOH(I),SINC(I),SABS(I)
+  210 CONTINUE
+  211 CLOSE(UNIT=13)
+	CLOSE(UNIT=9)
+	CLOSE(UNIT=10)
+      print *, 'successful termination of corps'
+      END
+C
+C
+C  S/R SCATI    MULTIPLE SCATTERING
+C
+      SUBROUTINE SCATI(DIM,HEIGHT,MFACH,MUTH,RSIG)
+      	INCLUDE 'const.inc'
+	REAL*4 LAMBDA(10),MUTV(10),MUTS(10),MUTC1(10),MFACH(10),MUTH(10)
+      REAL*4 RSIG(10),SUMH(10),SUMH1(10,256)
+      REAL*4 AFACS(4,10),AFACV(10)
+      COMMON/PAR/PIBY18,ANG,NUM,LAMBDA
+      COMMON/VAN/DIMV,MUTV,AFACV
+      COMMON/SAM/DIMS,TC1,MUTS,MUTC1,AFACS
+C
+C  INITIALISE PARAMETERS
+      X=HEIGHT/DIM
+      NZ=INT(16.*SQRT(X*SQRT(X))+0.5)
+      IF(NZ-256) 11,10,10
+10    NZ=256
+11    NRINC=INT(FLOAT(NZ)/X+0.5)
+12    IF(NRINC.LT.4)RETURN
+      NZ=INT(FLOAT(NRINC)*X+0.5)
+      IF(NZ.LE.256)GOTO 15
+      NRINC=NRINC-1
+      GO TO 12
+15    AREA=0.5*PI*DIM**2
+      HZ=HEIGHT/FLOAT(NZ)
+      HZ2=HZ*HZ
+      RINC=DIM/FLOAT(NRINC)
+      PINC=PI/RINC
+      DO 30 N=1,NUM
+      DO 30 I=1,NZ
+30    SUMH1(N,I)=0.
+C  LOOP OVER SLICES IN Z DIRECTION
+      DO 70 IZ2=1,NZ
+      FIZ=FLOAT(IZ2-1)
+      HIZ=FIZ*FIZ*HZ2
+C LOOP FIRST SEGMENT
+      DO 70 IR1=1,NRINC
+      R1=(FLOAT(IR1)-0.5)*RINC
+      R11=R1*R1
+C LOOP SECOND SEGMENT
+      DO 70 IR2=1,NRINC
+      R2=(FLOAT(IR2)-0.5)*RINC
+      R22=R2*R2
+      RR=R1*R2
+      NAINC=INT(PINC*R2+0.5)
+      AINC=PI/FLOAT(NAINC)
+      R12=2.*RR
+      X=RR*AINC
+C
+      DO 55 N=1,NUM
+55    SUMH(N)=0.
+      DO 60 IT2=1,NAINC
+      DSQ=HIZ+R11+R22-R12*COS((FLOAT(IT2)-0.5)*AINC)
+      D=SQRT(DSQ)
+      DO 58 N=1,NUM
+58    SUMH(N)=EXP(-MUTH(N)*D)/DSQ+SUMH(N)
+60    CONTINUE
+      X=R1*R2*AINC
+      DO 68 N=1,NUM
+68    SUMH1(N,IZ2)=X*SUMH(N)+SUMH1(N,IZ2)
+70    CONTINUE
+C
+      DO 85 N=1,NUM
+      SUMH(N)=0.
+      DO 80 IZ1=2,NZ
+      X=FLOAT(2*(NZ-IZ1+1))
+      SUMH(N)=X*SUMH1(N,IZ1)+SUMH(N)
+80    CONTINUE
+      X=RSIG(N)*HZ*RINC**2/(2.*AREA*FLOAT(NZ))
+85    MFACH(N)=1./(1.-MUTH(N)*X*(FLOAT(NZ)*SUMH1(N,1)+SUMH(N)))
+      RETURN
+      END
+C
+C
+C  S/R ACYLI   ABSORPTION SAMPLE IN CONTAINER
+C
+      SUBROUTINE ACYLI(NPRINT)
+	INCLUDE 'const.inc'
+      REAL*4 LAMBDA(10),MUTV(10),MUTS(10),MUTC1(10)
+      LOGICAL TESTA,TESTSQ(3)
+      REAL*4 AFACS(4,10),AREA(3),ATTEN(3),COUNT(2),DIST(3),DISTSQ(3)
+     1,HOLD(3),RADIUS(3),RINC(2),TAU(2),AFACV(10)
+      COMMON/PAR/PIBY18,ANG,NUM,LAMBDA
+      COMMON/VAN/DIMV,MUTV,AFACV
+      COMMON/SAM/DIMS,TC1,MUTS,MUTC1,AFACS
+C
+C  INITIALISE PARAMETERS
+C
+      RADIUS(1)=0.
+      RADIUS(2)=DIMS
+      COUNT(1)=20.
+      RINC(1)=DIMS/COUNT(1)
+   11 RINC(2)=RINC(1)
+      EPS=0.5*RINC(2)
+      IF(TC1-EPS)12,12,13
+   12 COUNT(2)=1.
+      GOTO 14
+   13 INC=(TC1-EPS-0.001)/RINC(2)
+      COUNT(2)=INC+1.
+C
+14    DO 21 LOOP=1,NUM
+C
+      MUTC1(LOOP)=MUTC1(LOOP)*TC1/(COUNT(2)*RINC(2))
+      RADIUS(3)=DIMS +COUNT(2)*RINC(2)
+      IF (NPRINT .GT. 1) WRITE(6,100)COUNT(2),MUTC1(LOOP)
+100   FORMAT(' COUNT(2)=',F5.1,'  MU=',F5.3)
+      N=2
+      DO 1 I=1,N
+1     AREA(I)=0.5*PI*(RADIUS(I+1)**2-RADIUS(I)**2)
+      ANGLE=0.5*PI-ANG
+C
+      DO 21 J=1,N
+      PINC=PI/RINC(J)
+C
+      DO 2 K=1,N
+2     HOLD(K)=0.
+      NRINC=INT(COUNT(J)+0.1)
+C
+      DO 20 ISTEP1=1,NRINC
+      DO 3 K=1,N
+3     ATTEN(K)=0.
+      VRAD=(FLOAT(ISTEP1)-0.5)*RINC(J)+RADIUS(J)
+      VR2=VRAD*VRAD
+      NAINC=INT(PINC*VRAD+0.5)
+      AINC=PI/FLOAT(NAINC)
+      VINC=VRAD*AINC
+C
+      DO 19 ISTEP2=1,NAINC
+      FIST=(FLOAT(ISTEP2)-0.5)*AINC
+      DO 4 K=1,N
+4     TAU(K)=0.
+C
+      DO 18 K=1,3,2
+      VANGLE=FIST+FLOAT(K-2)*ANGLE
+      TESTA=2.*ABS(PI-VANGLE).LE.PI
+      HOLD4=VRAD*COS(VANGLE)
+      HOLD5=VR2-HOLD4*HOLD4
+      DO 5 L=1,N
+      DISTSQ(L)=RADIUS(L+1)*RADIUS(L+1)-HOLD5
+      TESTSQ(L)=DISTSQ(L).GT.0.
+      IF(TESTSQ(L)) DIST(L)=SQRT(DISTSQ(L))
+5     CONTINUE
+      IF(J-1) 15,17,15
+15    HOLD5=HOLD4+DIST(2)
+      IF(.NOT.TESTSQ(1).OR.TESTA) GO TO 16
+      HOLD5=MUTC1(LOOP)*(-2.*DIST(1)+HOLD5)
+      TAU(1)=HOLD5+TAU(1)
+      TAU(2)=2.*MUTS(LOOP)*DIST(1)+HOLD5+TAU(2)
+      GO TO 18
+16    HOLD5=MUTC1(LOOP)*HOLD5
+      TAU(1)=HOLD5+TAU(1)
+      TAU(2)=HOLD5+TAU(2)
+      GO TO 18
+17    HOLD5=MUTS(LOOP)*(HOLD4+DIST(1))
+      TAU(1)=HOLD5+TAU(1)
+      TAU(2)=MUTC1(LOOP)*(DIST(2)-DIST(1))+HOLD5+TAU(2)
+18    CONTINUE
+C
+      DO 19 K=1,N
+19    ATTEN(K)=EXP(-TAU(K))+ATTEN(K)
+      DO 20 K=1,N
+20    HOLD(K)=VINC*ATTEN(K)+HOLD(K)
+      DO 21 K=1,N
+      L=N*(J-1)+K
+21    AFACS(L,LOOP)=HOLD(K)*RINC(J)/AREA(J)
+C
+      RETURN
+      END
+C
+C  S/R ACYLV   ABSORPTION VANADIUM
+C
+      SUBROUTINE ACYLV
+	INCLUDE 'const.inc'
+      REAL*4 LAMBDA(10),MUTV(10),MUTS(10),MUTC1(10)
+      REAL*4 AFACV(10)
+      REAL*4 AFACS(4,10)
+      COMMON/PAR/PIBY18,ANG,NUM,LAMBDA
+      COMMON/VAN/DIMV,MUTV,AFACV
+      COMMON/SAM/DIMS,TC1,MUTS,MUTC1,AFACS
+      AREA=0.5*PI*DIMV**2
+      DV2=DIMV*DIMV
+      RINC=DIMV/16.
+      PINC=PI/RINC
+      REA=RINC/AREA
+      ANGLE=0.5*PI-ANG
+C
+      DO 50 I=1,NUM
+      HOLD1=0.
+C
+      DO 30 ISTEP1=1,16
+      ATTEN=0.
+      VRAD=(FLOAT(ISTEP1)-0.5)*RINC
+      VR2=VRAD*VRAD
+      NAINC=INT(PINC*VRAD+0.5)
+      AINC=PI/FLOAT(NAINC)
+C
+      DO 20 ISTEP2=1,NAINC
+      TAU=0.
+      DO 10 J=1,3,2
+      VANGLE=(FLOAT(ISTEP2)-0.5)*AINC+FLOAT(J-2)*ANGLE
+      HOLD2=VRAD*COS(VANGLE)
+      DISTSQ=DV2+HOLD2*HOLD2-VR2
+      IF(DISTSQ)1,1,2
+    1 DIST=0.
+      GOTO 10
+    2 DIST=SQRT(DISTSQ)
+   10 TAU=MUTV(I)*(HOLD2+DIST)+TAU
+C
+   20 ATTEN=EXP(-TAU)+ATTEN
+   30 HOLD1=AINC*VRAD*ATTEN+HOLD1
+C
+50    AFACV(I)=HOLD1*REA
+      RETURN
+      END
+C
+C  S/R ACYLS   ABSORPTION SAMPLE ONLY
+C
+      SUBROUTINE ACYLS
+	INCLUDE 'const.inc'
+      REAL*4 LAMBDA(10),MUTV(10),MUTS(10),MUTC1(10)
+      REAL*4 AFACV(10),AFACS(4,10)
+      COMMON/PAR/PIBY18,ANG,NUM,LAMBDA
+      COMMON/VAN/DIMV,MUTV,AFACV
+      COMMON/SAM/DIMS,TC1,MUTS,MUTC1,AFACS
+      DV2=DIMS*DIMS
+      AREA=0.5*PI*DV2
+      RINC=DIMS/16.
+      PINC=PI/RINC
+      REA=RINC/AREA
+      ANGLE=0.5*PI-ANG
+C
+      DO 50 I=1,NUM
+      HOLD1=0.
+C
+      DO 30 ISTEP1=1,16
+      ATTEN=0.
+      VRAD=(FLOAT(ISTEP1)-0.5)*RINC
+      VR2=VRAD*VRAD
+      NAINC=INT(PINC*VRAD+0.5)
+      AINC=PI/FLOAT(NAINC)
+C
+      DO 20 ISTEP2=1,NAINC
+      TAU=0.
+      DO 10 J=1,3,2
+      VANGLE=(FLOAT(ISTEP2)-0.5)*AINC+FLOAT(J-2)*ANGLE
+      HOLD2=VRAD*COS(VANGLE)
+      DISTSQ=DV2+HOLD2*HOLD2-VR2
+      IF(DISTSQ)1,1,2
+    1 DIST=0.
+      GOTO 10
+    2 DIST=SQRT(DISTSQ)
+   10 TAU=MUTS(I)*(HOLD2+DIST)+TAU
+C
+   20 ATTEN=EXP(-TAU)+ATTEN
+   30 HOLD1=AINC*VRAD*ATTEN+HOLD1
+C
+50    AFACS(1,I)=HOLD1*REA
+      RETURN
+      END
+	FUNCTION POLY3(X,P)
+	REAL*4 P(3)
+	POLY3=P(1)+P(2)*X+P(3)*X*X
+	RETURN
+	END
+C
+	FUNCTION POLY4(X,P)
+	REAL*4 P(4)
+	X2=X*X
+	POLY4=P(1)+P(2)*X+P(3)*X2+P(4)*X2*X
+	RETURN
+	END
+C
+	SUBROUTINE CALP3(M,N,F,P)
+	REAL*4 F(20),P(3)
+	COMMON/DATA/R(50),D(50)
+	DO I=1,M
+	   F(I)=D(I)-POLY3(R(I),P)
+	ENDDO
+	RETURN
+	END
+C
+	SUBROUTINE CALP4(M,N,F,P)
+	REAL*4 F(20),P(4)
+	COMMON/DATA/R(50),D(50)
+	DO I=1,M
+	   F(I)=D(I)-POLY4(R(I),P)
+	ENDDO
+	RETURN
+	END
+
+      SUBROUTINE VA02A(CALFUN,M,N,F,X,E,ESCALE,IPRINT,MAXFUN)
+      IMPLICIT INTEGER*4 (I-N)
+	EXTERNAL CALFUN
+      COMMON /POWELL/LPT,W(1500)
+      REAL*4 F(1),X(1),E(1)
+      MPLUSN=M+N
+      KST=N+MPLUSN
+      WRITE(*,101)M,N,KST
+  101 FORMAT(' M= ',I5,'   N= ',I5,'  KST= ',I5)
+      NPLUS=N+1
+      KINV=NPLUS*(MPLUSN+1)
+      KSTORE=KINV-MPLUSN-1
+      CALL CALFUN (M,N,F,X)
+      NN=N+N
+      K=NN
+	DO I=1,M
+	   K=K+1
+	   W(K)=F(I)
+	ENDDO
+      IINV=2
+      K=KST
+      I=1
+    2 X(I)=X(I)+E(I)
+      CALL CALFUN (M,N,F,X)
+      X(I)=X(I)-E(I)
+	DO J=1,N
+	   K=K+1
+	   W(K)=0.
+	   W(J)=0.
+	ENDDO
+      SUM=0.
+      KK=NN
+	DO J=1,M
+	   KK=KK+1
+	   F(J)=F(J)-W(KK)
+	   SUM=SUM+F(J)*F(J)
+	ENDDO
+      IF (SUM) 5,5,6
+    5 WRITE(*,7)I
+    7 FORMAT (5X,8HVA02A E(,I3,20H) UNREASONABLY SMALL)
+	DO J=1,M
+	   NN=NN+1
+	   F(J)=W(NN)
+	ENDDO
+      GOTO 10
+    6 SUM=1./SQRT(SUM)
+      J=K-N+I
+      W(J)=E(I)*SUM
+	DO J=1,M
+	   K=K+1
+	   W(K)=F(J)*SUM
+	   KK=NN+J
+	   DO II=1,I
+	     KK=KK+MPLUSN
+	     W(II)=W(II)+W(KK)*W(K)
+	   ENDDO
+	ENDDO
+      ILESS=I-1
+      IGAMAX=N+I-1
+      INCINV=N-ILESS
+      INCINP=INCINV+1
+   12 IF (ILESS.NE.0) GO TO 14
+   13 W(KINV)=1.
+      GO TO 15
+   14 B=1.
+	DO J=NPLUS,IGAMAX
+	   W(J)=0.
+	ENDDO
+      KK=KINV
+      DO 17 II=1,ILESS
+      IIP=II+N
+      W(IIP)=W(IIP)+W(KK)*W(II)
+      JL=II+1
+      IF (JL-ILESS) 18,18,19
+   18   DO JJ=JL,ILESS
+          KK=KK+1
+          JJP=JJ+N
+          W(IIP)=W(IIP)+W(KK)*W(JJ)
+          W(JJP)=W(JJP)+W(KK)*W(II)
+	ENDDO
+   19 B=B-W(II)*W(IIP)
+      KK=KK+INCINP
+   17 CONTINUE
+      B=1./B
+      KK=KINV
+      DO 21 II=NPLUS,IGAMAX
+      BB=-B*W(II)
+      DO 22 JJ=II,IGAMAX
+      W(KK)=W(KK)-BB*W(JJ)
+      KK=KK+1
+   22 CONTINUE
+      W(KK)=BB
+      KK=KK+INCINV
+   21 CONTINUE
+      W(KK)=B
+   15 GO TO (27,24),IINV
+   24 I=I+1
+      IF (I-N) 2,2,25
+   25 IINV=1
+      FF=0.
+      KL=NN
+      DO 26 I=1,M
+      KL=KL+1
+      F(I)=W(KL)
+      FF=FF+F(I)*F(I)
+   26 CONTINUE
+      ICONT=1
+      ISS=1
+      MC=N+1
+      IPP=IPRINT*(IPRINT-1)
+      ITC=0
+      IPS=1
+      WRITE(*,127)IPC,IPRINT
+      IPC=0
+  127 FORMAT(' IPC,IPRINT',2I5)
+   27 IPC=IPC-IPRINT
+      IF (IPC) 28,29,29
+   28 WRITE(*,30)ITC,MC,FF
+   30 FORMAT(//5X,9HITERATION,I4,I9,16H CALLS OF CALFUN,5X,
+     & 2HF=,1P5D24.10)
+      WRITE(*,31)(X(I),I=1,N)
+   31 FORMAT (5X,9HVARIABLES,/(1P5D24.10))
+      WRITE(*,32)(F(I),I=1,M)
+   32 FORMAT (5X,9HFUNCTIONS,/(1P5D24.10))
+      IPC=IPP
+      GO TO (29,33),IPS
+   29 GO TO (34,35),ICONT
+   35 IF (CHANGE-1.) 10,10,36
+   10 IF (IPRINT) 33,33,37
+   37 WRITE(*,38)
+   38 FORMAT (//5X,45HVA02A FINAL VALUES OF FUNCTIONS AND VARIABLES)
+      IPS=2
+      GO TO 28
+   33 RETURN
+   36 ICONT=1
+   34 ITC=ITC+1
+      K=N
+      KK=KST
+      DO 39 I=1,N
+      K=K+1
+      W(K)=0.
+      KK=KK+N
+      W(I)=0.
+      DO 40 J=1,M
+      KK=KK+1
+      W(I)=W(I)+W(KK)*F(J)
+   40 CONTINUE
+   39 CONTINUE
+      DM=0.
+      K=KINV
+      DO 41 II=1,N
+      IIP=II+N
+      W(IIP)=W(IIP)+W(K)*W(II)
+      JL=II+1
+      IF (JL-N) 42,42,43
+   42 DO 44 JJ=JL,N
+      JJP=JJ+N
+      K=K+1
+      W(IIP)=W(IIP)+W(K)*W(JJ)
+      W(JJP)=W(JJP)+W(K)*W(II)
+   44 CONTINUE
+      K=K+1
+   43 IF (DM-ABS(W(II)*W(IIP))) 45,41,41
+   45 DM=ABS(W(II)*W(IIP))
+      KL=II
+   41 CONTINUE
+      II=N+MPLUSN*KL
+      CHANGE=0.
+      DO 46 I=1,N
+      JL=N+I
+      W(I)=0.
+      DO 47 J=NPLUS,NN
+      JL=JL+MPLUSN
+      W(I)=W(I)+W(J)*W(JL)
+   47 CONTINUE
+      II=II+1
+      W(II)=W(JL)
+      W(JL)=X(I)
+      IF (ABS(E(I)*CHANGE)-ABS(W(I))) 48,48,46
+   48 CHANGE=ABS(W(I)/E(I))
+   46 CONTINUE
+      DO 49 I=1,M
+      II=II+1
+      JL=JL+1
+      W(II)=W(JL)
+      W(JL)=F(I)
+   49 CONTINUE
+      FC=FF
+      ACC=0.1/CHANGE
+      IT=3
+      XC=0.
+      XL=0.
+      IS=3
+      XSTEP=-AMIN1(0.5,ESCALE/CHANGE)
+      IF (CHANGE-1.) 50,50,51
+   50 ICONT=2
+   51 CALL VD01A (IT,XC,FC,6,ACC,0.1,XSTEP)
+      GO TO (52,53,53,53),IT
+   52 MC=MC+1
+      IF (MC-MAXFUN) 54,54,55
+   55 WRITE(*,56)MAXFUN
+   56 FORMAT (5X,5HVA02A,I6,16H CALLS OF CALFUN)
+      ISS=2
+      GO TO 53
+   54 XL=XC-XL
+      DO 57 J=1,N
+      X(J)=X(J)+XL*W(J)
+   57 CONTINUE
+      XL=XC
+      CALL CALFUN (M,N,F,X)
+      FC=0.
+      DO 58 J=1,M
+      FC=FC+F(J)*F(J)
+   58 CONTINUE
+      GO TO (59,59,60),IS
+   60 K=N
+      IF (FC-FF) 61,51,62
+   61 IS=2
+      FMIN=FC
+      FSEC=FF
+      GO TO 63
+   62 IS=1
+      FMIN=FF
+      FSEC=FC
+      GO TO 63
+   59 IF (FC-FSEC) 64,51,51
+   64 K=KSTORE
+      GO TO (75,74),IS
+   75 K=N
+   74 IF (FC-FMIN) 65,51,66
+   66 FSEC=FC
+      GO TO 63
+   65 IS=3-IS
+      FSEC=FMIN
+      FMIN=FC
+   63 DO 67 J=1,N
+      K=K+1
+      W(K)=X(J)
+   67 CONTINUE
+      DO 68 J=1,M
+      K=K+1
+      W(K)=F(J)
+   68 CONTINUE
+      GO TO 51
+   53 K=KSTORE
+      KK=N
+      GO TO (69,70,69),IS
+   70 K=N
+      KK=KSTORE
+   69 SUM=0.
+      DM=0.
+      JJ=KSTORE
+      DO 71 J=1,N
+      K=K+1
+      KK=KK+1
+      JJ=JJ+1
+      X(J)=W(K)
+      W(JJ)=W(K)-W(KK)
+   71 CONTINUE
+      DO 72 J=1,M
+      K=K+1
+      KK=KK+1
+      JJ=JJ+1
+      F(J)=W(K)
+      W(JJ)=W(K)-W(KK)
+      SUM=SUM+W(JJ)*W(JJ)
+      DM=DM+F(J)*W(JJ)
+   72 CONTINUE
+      GO TO (73,10),ISS
+   73 IF (ILESS.EQ.0) GO TO 83
+      J=KINV
+      KK=NPLUS-KL
+      DO 76 I=1,KL
+      K=J+KL-I
+      J=K+KK
+      W(I)=W(K)
+      W(K)=W(J-1)
+   76 CONTINUE
+      IF (KL-N) 77,78,78
+   77 KL=KL+1
+      JJ=K
+      DO 79 I=KL,N
+      K=K+1
+      J=J+NPLUS-I
+      W(I)=W(K)
+      W(K)=W(J-1)
+   79 CONTINUE
+      W(JJ)=W(K)
+      B=1./W(KL-1)
+      W(KL-1)=W(N)
+      GO TO 88
+   78 B=1./W(N)
+   88 K=KINV
+      DO 80 I=1,ILESS
+      BB=B*W(I)
+      DO 81 J=I,ILESS
+      W(K)=W(K)-BB*W(J)
+      K=K+1
+   81 CONTINUE
+      K=K+1
+   80 CONTINUE
+   83 IF (FMIN.LT.FF) GO TO 82
+      CHANGE=0.
+      GO TO 84
+   82 FF=FMIN
+      CHANGE=ABS(XC)*CHANGE
+   84 XL=-DM/FMIN
+      SUM=1./SQRT(AMAX1(1.0E-16,SUM+DM*XL))
+      K=KSTORE
+      DO 85 I=1,N
+      K=K+1
+      W(K)=SUM*W(K)
+      W(I)=0.
+   85 CONTINUE
+      DO 86 I=1,M
+      K=K+1
+      W(K)=SUM*(W(K)+XL*F(I))
+      KK=NN+I
+      DO 87 J=1,N
+      KK=KK+MPLUSN
+      W(J)=W(J)+W(KK)*W(K)
+   87 CONTINUE
+   86 CONTINUE
+      GO TO 12
+      END
+
+      SUBROUTINE VD01A (ITEST,X,F,MAXFUN,ABSACC,RELACC,XSTEP)
+      IMPLICIT INTEGER*4 (I-N)
+      GO TO (1,2,2),ITEST
+    2 IS=6-ITEST
+      ITEST=1
+      IINC=1
+      XINC=XSTEP+XSTEP
+      MC=IS-3
+      IF (MC) 4,4,15
+    3 MC=MC+1
+      IF (MAXFUN-MC) 12,15,15
+   12 ITEST=4
+   43 X=DB
+      F=FB
+      IF (FB-FC) 15,15,44
+   44 X=DC
+      F=FC
+   15 RETURN
+    1 GO TO (5,6,7,8),IS
+    8 IS=3
+    4 DC=X
+      FC=F
+      X=X+XSTEP
+      GO TO 3
+    7 IF (FC-F) 9,10,11
+   10 X=X+XINC
+      XINC=XINC+XINC
+      GO TO 3
+    9 DB=X
+      FB=F
+      XINC=-XINC
+      GO TO 13
+   11 DB=DC
+      FB=FC
+      DC=X
+      FC=F
+   13 X=DC+DC-DB
+      IS=2
+      GO TO 3
+    6 DA=DB
+      DB=DC
+      FA=FB
+      FB=FC
+   32 DC=X
+      FC=F
+      GO TO 14
+    5 IF (FB-FC) 16,17,17
+   17 IF (F-FB) 18,32,32
+   18 FA=FB
+      DA=DB
+   19 FB=F
+      DB=X
+      GO TO 14
+   16 IF (FA-FC) 21,21,20
+   20 XINC=FA
+      FA=FC
+      FC=XINC
+      XINC=DA
+      DA=DC
+      DC=XINC
+   21 XINC=DC
+      IF ((D-DB)*(D-DC)) 32,22,22
+   22 IF (F-FA) 23,24,24
+   23 FC=FB
+      DC=DB
+      GO TO 19
+   24 FA=F
+      DA=X
+   14 IF (FB-FC) 25,25,29
+   25 IINC=2
+      XINC=DC
+      IF (FB-FC) 29,45,29
+   29 D=(FA-FB)/(DA-DB)-(FA-FC)/(DA-DC)
+      IF (D*(DB-DC)) 33,37,37
+C -- This prevents from zero devide if d = 0
+C -- Program will crash otherwise
+C -- A file WARNING.TXT will be opened
+37	if (d.eq.0.0) then
+		open (99, file='WARNING.TXT', status='unknown')
+		write (99,'('' Zero divide occured !!! '')')
+		close (99)
+		itest=3
+		goto 43
+	endif
+      D=0.5*(DB+DC-(FB-FC)/D)
+      IF (ABS(D-X)-ABS(ABSACC)) 34,34,35
+   35 IF (ABS(D-X)-ABS(D*RELACC)) 34,34,36
+   34 ITEST=2
+      GO TO 43
+   36 IS=1
+      X=D
+      IF ((DA-DC)*(DC-D)) 3,26,38
+   38 IS=2
+      GO TO (39,40),IINC
+   39 IF (ABS(XINC)-ABS(DC-D)) 41,3,3
+   33 IS=2
+      GO TO (41,42),IINC
+   41 X=DC
+      GO TO 10
+   40 IF (ABS(XINC-X)-ABS(X-DC)) 42,42,3
+   42 X=0.5*(XINC+DC)
+      IF ((XINC-X)*(X-DC)) 26,26,3
+   45 X=0.5*(DB+DC)
+      IF ((DB-X)*(X-DC)) 26,26,3
+   26 ITEST=3
+      GO TO 43
+      END
+
+      SUBROUTINE SV01A (M,N,VAR,IVDIM,IVPAR)
+      IMPLICIT INTEGER*4 (I-N)
+      COMMON /POWELL/LPT,W(1500)
+      REAL*4 VAR(IVDIM,IVDIM)
+      MN = M + N
+      IMIN = MN + N
+      GO TO (1,5), IVPAR
+  1   IMAX = N*(MN+2)
+      DO 2 I = 1,N
+      IMIN = IMIN + 1
+      DO 3 J = I,N
+      KI = J - I
+      SUM = 0.0
+      DO 4 K = IMIN,IMAX,MN
+      KK = K + KI
+      SUM = SUM + W(K)*W(KK)
+  4   CONTINUE
+      VAR(I,J) = SUM
+      VAR(J,I) = SUM
+  3   CONTINUE
+  2   CONTINUE
+      RETURN
+  5   IBAS = (N+1) * (MN + 1)
+       DO I = 1,N
+         JCUR = IMIN +  I
+         DO J = 1,N
+           W(J) = 0.0
+	 ENDDO
+         IDEL = IBAS
+         DO J = 1,N
+            W(J) = W(J) + W(IDEL)*W(JCUR)
+            IF (J.NE.N) THEN
+              KMIN = J + 1
+              KCUR = JCUR
+              DO K = KMIN,N
+              IDEL = IDEL + 1
+              KCUR = KCUR + MN
+              W(J) = W(J) + W(IDEL) * W(KCUR)
+              W(K) = W(K) + W(IDEL) * W(JCUR)
+	       ENDDO 
+              IDEL = IDEL + 1
+              JCUR = JCUR + MN
+             ENDIF
+	  ENDDO
+      	DO J = I,N
+         KCUR  = IMIN + J
+         SUM = 0.0
+      	  DO K = 1,N
+           SUM = SUM + W(K) * W(KCUR)
+           KCUR = KCUR + MN
+ 	  ENDDO
+         VAR(I,J) = SUM
+         VAR(J,I) = SUM
+	ENDDO
+	ENDDO
+      RETURN
+      END
+ 
+C     This program calculates <M>,<sigc>,<sigs>,<siga>,<m1>,<m2>
+      SUBROUTINE AVER
+	INCLUDE 'const.inc'
+	INCLUDE 'parameters.inc'
+	REAL*4 XNAM(20),RTITL(20),RNAM(5),MBYM,MBYM2,
+     1 	    XLADD(N_CHN),SS(N_CHN),DSS(N_CHN),
+     2      KE,C(20),EM(20),SCOH(20),SINC(20),SABS(20)
+      REAL*4 SIGN(20),B(20),BB(20)
+	CHARACTER*4 INAME
+      COMMON/CROSS/KE,SIGCS,SIGSS,SIGAS,ATWTS,MBYM,MBYM2,E,EM,SCOH,
+     1SINC,SABS,B,BB,C,EB,EBB
+      REAL*4 XCODE
+      
+   99 CTOT=0.0
+      PRINT *,' Input values for: C,M,Scoh,Sinc,Sabs [C=0.0 ends cycle]'
+      PRINT *,' To obtain negative b, set Scoh =-|Scoh|; pgm uses |C|'
+      PRINT *,' to get magnitude of b'
+      DO 1 I=1,10
+      SIGN(I)=1.0
+      PRINT *,' C,M,SCOH,SINC,SABS'
+      READ(5,100) C(I),EM(I),SCOH(I),SINC(I),SABS(I)
+  100 FORMAT(5F10.4)
+      IF(SCOH(I).LT.0.0) SIGN(I)=-1.0
+      SCOH(I)=ABS(SCOH(I))
+      IF(C(I).LT.0.001) GO TO 2
+      CTOT=CTOT+C(I)
+    1 NUM=I
+    2 DO 4 I=1,NUM
+      C(I)=C(I)/CTOT
+      B(I)=SIGN(I)*SQRT(SCOH(I)/4.0/PI)
+      BB(I)=(SCOH(I)+SINC(I))/4.0/PI
+    4 CONTINUE
+
+      ATWTS=0.0
+      MBYM=0.0
+      MBYM2=0.0
+      EB=0.0
+      EBB=0.0
+      SIGAS=0.0
+      DO 6 I=1,NUM
+      ATWTS=ATWTS+C(I)*EM(I)
+      EB=EB+C(I)*B(I)
+      EBB=EBB+C(I)*BB(I)
+      SIGAS=SIGAS+C(I)*SABS(I)
+      MBYM=MBYM+C(I)*BB(I)/EM(I)
+    6 MBYM2=MBYM2+C(I)*BB(I)/EM(I)/EM(I)
+      MBYM=MBYM/EBB
+      MBYM2=MBYM2/EBB
+      SIGSS=4.0*PI*EBB
+      SIGCS=4.0*PI*EB*EB
+   98 RETURN
+      END
+

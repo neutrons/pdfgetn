@@ -1,0 +1,53 @@
+	SUBROUTINE CORPL(NC,XL,RP,SP)
+C******************************************************************************
+C*
+C*
+C* $Id: corpl.f,v 1.1 2006/03/12 09:59:24 tproffen Exp $
+C*
+C* $Log: corpl.f,v $
+C* Revision 1.1  2006/03/12 09:59:24  tproffen
+C* Initial revision
+C*
+c Revision 1.2  1997/04/13  16:54:42  billinge
+c removed DEC fortran
+c
+C*
+C**************************************************************************
+
+	REAL*4 XL(*),RP(*),SP(*)
+
+	COMMON/PARAS/NCH,TWOTHT,PI,NSRANG,NPRINT,DOMEGA,DELQ,IQMIN,IQMAX,JSG1
+	REAL*4 TWOTHT,PI
+	COMMON/PLACZ/MBYM,MBYM2,KE
+	REAL*4 MBYM,MBYM2,KE
+	COMMON/DETPAR/DENDET,RDET,XF,SN,C1,C2,C3
+	COMMON/LOGS/LPR,LPS,LCAN,LVAN,LCOR
+	LOGICAL LPR,LPS,LCAN,LVAN,LCOR
+
+	RMBYM=1.008/50.95
+	RMBYM2=RMBYM**2
+	RKE=440.
+	TCON=81.787/0.086165
+	MULT=NC/50
+	IF (NPRINT.GE.2) PRINT 101
+101	FORMAT(/' CORRECTIONS '//15X,'REFERENCE',10X,'SAMPLE',
+     1	/,4X,'LAMBDA',2(5X,'PLAC')/)
+C	PLACZEK CORRECTION
+	DO N=1,NC
+	  RKEBYE=RKE/3.0/TCON*XL(N)*XL(N)
+	  SKEBYE=KE/3.0/TCON*XL(N)*XL(N)
+	  CALL FLUX(XL(N))
+	  A1=-2.0*SN*C1
+	  A2=+2.0*SN*(1.0-C2*SN)
+	  A3=(1.0-2.0*SN*(1.0+C3))
+	  IF (LPR) RP(N) = A1*RMBYM+A2*RMBYM2+A3*RKEBYE*RMBYM
+	  IF (LPS) SP(N) = A1*MBYM+A2*MBYM2+A3*SKEBYE*MBYM
+	  IF(NPRINT.GE.2) THEN
+	    NP=N/MULT
+	    NP=NP*MULT
+	    IF (N.EQ.NP) PRINT 100,XL(N),RP(N),SP(N)
+100	    FORMAT(8F10.5)
+	  ENDIF
+	ENDDO
+	RETURN
+	END

@@ -1,0 +1,34 @@
+#!C:\Program Files\ActiveState Perl Dev Kit 6.0\bin\lib\pai.exe
+PAP-Version: 1.0
+Packer: C:\Program Files\ActiveState Perl Dev Kit 6.0\bin\perlapp.exe
+Byref: 0
+Clean: 0
+Cwd: C:/Thomas/src/PDFgetN
+Date: 2005-12-18 11:02:24
+Debug: 
+Dependent: 0
+Dyndll: 0
+Exe: PDFgetN.exe
+Force: 1
+Gui: 0
+Hostname: LTDILL2
+No-Compress: 0
+No-Gui: 0
+No-Logo: 0
+Runlib: 
+Script: PDFgetN.pl
+Shared: none
+Singleton: 0
+Tmpdir: 
+Verbose: 0
+Version-Comments: 
+Version-CompanyName: 
+Version-FileDescription: PDFgetN data processing program
+Version-FileVersion: 1.6.3
+Version-InternalName: PDFgetN
+Version-LegalCopyright: 
+Version-LegalTrademarks: 
+Version-OriginalFilename: PDFgetN
+Version-ProductName: PDFgetN
+Version-ProductVersion: 1.6.3
+Xclude: 0

@@ -1,0 +1,84 @@
+======================================================================
+|                     PDFgetN version 1.5                            |
+|                                                                    |
+|                         Homepage:                                  |
+|       http://www.pa.msu.edu/cmp/billinge-group/programs/PDFgetN    |
+======================================================================
+
+Welcome to the PDFgetN distribution. The installation is quite simple
+thanks to an installation script. The following lists the required 
+programs (section I) and optional programs (section II) to run PDfgetN.
+More information about the programs and links to download them are
+provided on the PDFgetN homepage as well as part of the screen output
+during the installation procedure.
+
+----------------------------------------------------------------------
+O. Windows version
+
+The Windows version is distributed as a selfextracting installer. Just
+download the Windows version (PDFgetN-x.x-win32.exe) and double click
+on the program. Follow the installation instructions and that is all.
+
+----------------------------------------------------------------------
+
+I. Required programs to run PDFgetN
+
+  1. Perl (version >= 5.0) 
+  2. Perl/Tk module (version >= 800.14)
+  3. Fortran 77 compiler
+  4. C++ compiler
+
+
+----------------------------------------------------------------------
+
+II. Optional programs
+
+  1. KUPLOT for interactive plotting (version >= 4.1)
+  2. OpenGENIE to preprocess NORM data (e.g. ISIS data)
+
+
+----------------------------------------------------------------------
+
+III. PDFgetN Install Instructions
+
+  If you are reading this file you have already determined how to unpack
+  the distribution. Enter the PDFgetN-1.x directory and follow the
+  steps listed below. 
+
+  1. Run the install script by typing "perl install.pm" and follow the
+     instructions that appear on the screen.
+
+     If a message such as "perl: Command not found" is written then
+     you need to download perl from the CPAN archive at
+     http://www.perl.com/CPAN/. The executable can be downloaded for
+     many platforms.
+
+  2. If the installation is successful then you are ready to start
+     PDFgetN. In case the binary installation directory (e.g.
+     /usr/local/bin) is not in your PATH you have to enter the 
+     complete path to start the program otherwise, simple type
+     PDFgetN (or pdfgetn ;-)).
+
+----------------------------------------------------------------------
+
+IV. Copyright and License Information
+
+This is part of the PDFgetN distribution written by Peter Peterson,
+Matthias Gutmann, Thomas Proffen, and Simon Billinge.
+
+Copyright 2000 Michigan State University Board of Trustees
+
+Use and distribution of this program is subject to the terms laid out
+in the license in LICENSE.txt included with this distribution.  A copy
+of the license can be obtained from Michigan State University office
+of Libraries, Computing and Technology (517-353-0722).
+
+----------------------------------------------------------------------
+
+V. Contact
+
+To report bugs, get added to the mailing list, suggest new features,
+or get the latest version of PDFgetN contact Simon Billinge via email
+at billinge@pa.msu.edu.
+
+----------------------------------------------------------------------

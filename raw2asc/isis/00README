@@ -1,0 +1,15 @@
+This file is a macro to convert binary NRM files to ASCII that
+can be read by PDFgetN using the program OPENGenie (see main
+README). 
+
+To use the macro one can either load it within OPENGenie 
+using load "nrmtoasc.gcl" or add the load command to the OPENGenie
+startup file (usually called 'default_genieinit.gcl').
+
+Once the file is loaded, the conversion is started with
+
+        nrmtoasc inst firstrun lastrun ndet 
+   e.g. nrmtoasc LAD  14933    14936   8
+
+The resulting xxxxxxx.asc files can then be processed using PDFgetN.
+

@@ -1,0 +1,29 @@
+PRINTN
+PRINTN "**********************************************"
+PRINTN "* Loading NRMtoASC                           *"
+PRINTN "* Usage: nrmtoasc inst firstrun lastrun ndet *"
+PRINTN "**********************************************"
+PRINTN
+
+PROCEDURE nrmtoasc
+PARAMETERS inst first last ndet
+
+LOCAL inst first last ndet
+LOCAL ifile afile lfile w
+
+  LOOP i FROM first TO last STEP 1
+    ifile = inst+as_string(i)+".nrm"
+    afile = inst+as_string(i)+".asc"
+    PRINTIN "Processing file " ifile
+
+    set/input ifile
+    w = get(1)
+    put/ascii/new w file=afile
+
+    LOOP d FROM 2 TO ndet STEP 1
+      w = get(d)
+      put/ascii w file=afile
+    ENDLOOP
+  ENDLOOP
+
+ENDPROCEDURE
