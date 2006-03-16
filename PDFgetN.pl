@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 ##################################################
 # Created by Peter Peterson on March 31, 1999
-# Last modified on January 17, 2000
+# $Id: PDFgetN.pl,v 1.2 2006/03/16 04:07:44 tproffen Exp $
 # Version 1.6.x
 ##################################################
 #
