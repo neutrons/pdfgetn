@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 ##################################################
 # Created by Peter Peterson on March 31, 1999
-# $Id: PDFgetN.pl,v 1.2 2006/03/16 04:07:44 tproffen Exp $
+# $Id: PDFgetN.pl,v 1.3 2007/01/30 23:06:58 tproffen Exp $
 # Version 1.6.x
 ##################################################
 #
@@ -176,7 +176,7 @@ $xpdf::status='';
 $xpdf::process='';
 $xpdf::exist=1;
 $xpdf::tutorial="$GLOBE::binpath/tutorial/";
-$xpdf::build="Sun Dec 18 11:01:44 MST 2005";
+$xpdf::build="Mon May 29 15:07:17 MDT 2006";
 
 if ($ENV{'HOME'}) {$GLOBE::localDefault = "$ENV{'HOME'}/.pdfgetn";}
 else              {$GLOBE::localDefault = "$GLOBE::binpath/.pdfgetn";}
