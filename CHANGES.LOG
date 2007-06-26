@@ -3,10 +3,10 @@
 PDFgetN Changes 1.6 -> 1.6.x
 --------------------------------------------------------------------------
 --------------------------------------------------------------------------
-January 9, 2006
+June 25, 2007
 
-neutron.table
-  Scattering length for Li set to be negative.
+fortran/gsasprep.f ..
+  Problem with error propagation when merging runs fixed.
 --------------------------------------------------------------------------
 December 16, 2005
 

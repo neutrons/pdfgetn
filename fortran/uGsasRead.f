@@ -150,8 +150,9 @@ c Apply here multiplicative and additive corrections.
 
       do i=1,local_num_of_channels
          local_data(i)=local_weight*local_data(i)
-         local_data_err(i)=local_weight*local_data_err(i)
          local_data(i)=local_mult_data*local_data(i)+local_add_to_data
+c
+         local_data_err(i)=local_weight**2*local_data_err(i)**2
          local_data_err(i)=local_mult_data*local_data_err(i)
       enddo
 

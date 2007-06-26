@@ -40,18 +40,19 @@ C-Ok, let's normalize the data here
 
       do i=1, local_num_of_channels
          local_data(i)=local_data(i)/local_norm_factor
+         local_data_err(i)=sqrt(local_data(i))/local_norm_factor
       enddo
 
-C-Ok, let's do proper error propagation:
+C-Ok, let's do proper error propagation - may be later
 
-      if (local_norm_factor_err.gt.0.0) then
-        do i=1, local_num_of_channels
-           local_data_err(i)=sqrt((local_data_err(i)/
-     1          local_norm_factor)**2+
-     1          ((local_data(i)*local_norm_factor_err)/
-     1          (local_norm_factor**2))**2)
-        enddo
-      endif
+c      if (local_norm_factor_err.gt.0.0) then
+c        do i=1, local_num_of_channels
+c           local_data_err(i)=sqrt((local_data_err(i)/
+c     1          local_norm_factor)**2+
+c     1          ((local_data(i)*local_norm_factor_err)/
+c     1          (local_norm_factor**2))**2)
+c        enddo
+c      endif
 
       return
 

@@ -40,10 +40,11 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
       write(6,*) '%%info: Summing data '
 
+c Remember the dara_err array holds the suqres of the errors
+
       do i=1, local_num_of_channels
          local_sum(i)=local_data1(i)+local_data2(i)
-         local_sum_err(i)=sqrt(local_data1_err(i)**2+
-     1        local_data2_err(i)**2)
+         local_sum_err(i)=local_data1_err(i)+local_data2_err(i)
       enddo
 
       return
