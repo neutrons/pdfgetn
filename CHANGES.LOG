@@ -5,6 +5,9 @@ PDFgetN Changes 1.6 -> 1.6.x
 --------------------------------------------------------------------------
 September 4, 2007
 
+PDFgetN.pl
+  Version changed to 1.6.4
+  
 fortran/gsasprep.f ..
   Problem with error normalization fixed.
 --------------------------------------------------------------------------
