@@ -40,7 +40,7 @@ C-Ok, let's normalize the data here
 
       do i=1, local_num_of_channels
          local_data(i)=local_data(i)/local_norm_factor
-         local_data_err(i)=sqrt(local_data(i))/local_norm_factor
+         local_data_err(i)=local_data_err(i)/local_norm_factor
       enddo
 
 C-Ok, let's do proper error propagation - may be later

@@ -4,7 +4,7 @@ Packer: C:\Program Files\ActiveState Perl Dev Kit 6.0\bin\perlapp.exe
 Byref: 0
 Clean: 0
 Cwd: C:/Thomas/src/PDFgetN
-Date: 2005-12-18 11:02:24
+Date: 2007-09-04 09:06:04
 Debug: 
 Dependent: 0
 Dyndll: 0
@@ -24,11 +24,11 @@ Verbose: 0
 Version-Comments: 
 Version-CompanyName: 
 Version-FileDescription: PDFgetN data processing program
-Version-FileVersion: 1.6.3
+Version-FileVersion: 1.6.4
 Version-InternalName: PDFgetN
 Version-LegalCopyright: 
 Version-LegalTrademarks: 
 Version-OriginalFilename: PDFgetN
 Version-ProductName: PDFgetN
-Version-ProductVersion: 1.6.3
+Version-ProductVersion: 1.6.4
 Xclude: 0
