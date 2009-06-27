@@ -2,12 +2,13 @@
 # Simple makefile to compile and install the bin2asc utilities ..
 #######################################################################
 
-F77  =  gfortran
-FFLAGS  = -O0 -fno-f2c -ffixed-line-length-78 -std=legacy -w
-LDFLAGS =
-
-INSTALL_DIR  = /usr/local/lib/PDFgetN-1.6.4/binary
+F77         =  gfortran
+FFLAGS      = -O0 -fno-f2c -ffixed-line-length-78 -std=legacy -w
+LDFLAGS     =
+INSTALL_DIR = ../binary
 INSTALL_MOD = 755
+
+#######################################################################
 
 all: pdf2asc int2asc soq2asc soq2gsa
 
@@ -24,7 +25,14 @@ soq2gsa: soq2gsa.o lenstr.o soqread.o invnorm.o maketmap.o readiparm.o
 	$(F77) -c $(FFLAGS) $<
 
 install: pdf2asc int2asc soq2asc soq2gsa
-	cp * $(INSTALL_DIR)
+	cp pdf2asc  $(INSTALL_DIR)
+	chmod $(INSTALL_MOD) $(INSTALL_DIR)/pdf2asc
+	cp int2asc  $(INSTALL_DIR)
+	chmod $(INSTALL_MOD) $(INSTALL_DIR)/int2asc
+	cp soq2asc  $(INSTALL_DIR)
+	chmod $(INSTALL_MOD) $(INSTALL_DIR)/soq2asc
+	cp soq2gsa  $(INSTALL_DIR)
+	chmod $(INSTALL_MOD) $(INSTALL_DIR)/soq2gsa
 
 clean:
 	rm -f *~ *.o

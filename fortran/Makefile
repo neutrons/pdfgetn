@@ -6,7 +6,7 @@ F77  =  gfortran
 FFLAGS  = -O0 -fno-f2c -ffixed-line-length-78 -std=legacy -w
 LDFLAGS = 
 
-INSTALL_DIR  = /usr/local/lib/PDFgetN-1.6.4/binary
+INSTALL_DIR = ../binary
 INSTALL_MOD = 755
 
 ##############################################################################
@@ -116,26 +116,6 @@ install: prepsepd prepnorm prepariel prepgsas corps soqd blend damp ft
 	chmod $(INSTALL_MOD) $(INSTALL_DIR)/damp
 	cp ft  $(INSTALL_DIR)
 	chmod $(INSTALL_MOD) $(INSTALL_DIR)/ft
-
-local: prepsepd prepnorm prepariel prepgsas corps soqd blend damp ft 
-	cp prepsepd  ../binary
-	chmod $(INSTALL_MOD) ../binary/prepsepd
-	cp prepnorm  ../binary
-	chmod $(INSTALL_MOD) ../binary/prepnorm
-	cp prepariel  ../binary
-	chmod $(INSTALL_MOD) ../binary/prepariel
-	cp prepgsas  ../binary
-	chmod $(INSTALL_MOD) ../binary/prepgsas
-	cp corps  ../binary
-	chmod $(INSTALL_MOD) ../binary/corps
-	cp soqd ../binary
-	chmod $(INSTALL_MOD) ../binary/soqd
-	cp blend  ../binary
-	chmod $(INSTALL_MOD) ../binary/blend
-	cp damp  ../binary
-	chmod $(INSTALL_MOD) ../binary/damp
-	cp ft  ../binary
-	chmod $(INSTALL_MOD) ../binary/ft
 
 # cleanup
 

@@ -1,4 +1,5 @@
-####################
+
+###################
 # Created by Peter Peterson on February 5, 1999
 # Last Modified on December 9, 1999
 ####################
@@ -532,6 +533,71 @@ sub fileDialog{
     } else {
       return 0;
     }
+}
+
+#####
+=pod
+
+=item batchProcess(widget)
+
+    Processed set of runs from batch file.
+
+=back
+
+=cut
+
+sub batchProcess{
+    my($widget)=@_;
+    my(@types)=(["All files","*"]);
+    my(@runs,@temp,@out);
+
+    my $name=$widget->getOpenFile();
+    if ($name) {
+      unless (-e $name) {
+        &body::printStatus("Can not read $name ..");
+        return 0;
+      }
+      open (BATCH,"$name"); 
+      my $line=<BATCH>; # Header line
+      my $pp=0;
+      while ($line=<BATCH>) {
+        $pp++; chomp $line; $line=~s/"//g;
+        ($runs[$pp],$temp[$pp],$out[$pp])=split (/\t/,$line);
+      }
+
+      for (my $ip=1; $ip<=$pp; $ip++) {
+        &body::printStatus("Processing run $ip / $pp ..");
+        $GLOBE::runFile=$runs[$ip];
+        my $runname=(split /,/,$GLOBE::runFile)[0];
+        $line=&body::prep_getTitle($runname);
+        chomp($line); $GLOBE::title=$line;
+        $GLOBE::temp=$temp[$ip];
+
+        unless (&body::autoNormalize()) {return 0;}
+
+        &body::printStatus("Saving $out[$ip] ..");
+        unless ($out[$ip] eq $runname) {
+            rename $runname.".gr",$out[$ip].".gr";
+            rename $runname.".sq",$out[$ip].".sq";
+        }
+
+        &Hist::save("$out[$ip].hst");
+        if($FLAG::noOut){
+          &body::prep_clean($runname);
+          &rcorps::clean($runname);
+          &rsoqd::clean ($runname);
+          &rblend::clean($runname);
+          &rdamp::clean ($runname);
+          &rft::clean   ($runname);
+          &File::remove("soq2gsa.inp");
+          &File::remove("soq2gsa.log");
+        }
+      }
+      close BATCH;
+      &body::printStatus("Finished ..");
+      return 1;
+    }
+    return 0;
 }
 
 #####

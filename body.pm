@@ -3004,7 +3004,7 @@ sub autoNormalize{
   &whichOut('s');
   unless (&makePDF()) {
     &printStatus("Error occurred - normalization aborted","");
-    return;
+    return 0;
   }
   &Qual::calcSQ();
   my $densf=sprintf ($prec,$GLOBE::effSampleDensity);
@@ -3043,6 +3043,7 @@ sub autoNormalize{
 
   &printStatus("Final  : Density $densf - <S(Q)> is $savef","");
   $GLOBE::Savg_final=$savef;
+  return 1;
 }
 
 #####

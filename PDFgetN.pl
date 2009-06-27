@@ -163,20 +163,20 @@ use strict;
 
 package xpdf;
 
-$xpdf::version ="1.6.4";
+$xpdf::version ="1.6.6";
 $xpdf::authors ="Peter Peterson, Thomas Proffen, ";
 $xpdf::authors.="Matthias Gutmann & Simon Billinge\n";
 $xpdf::authors.="Michigan State University\n";
 $xpdf::authors.="Department of Physics and Astronomy\n";
 $xpdf::authors.="East Lansing, MI 48824-1116, USA";
-$xpdf::www     ="http://www.totalscattering.org/programs/PDFgetN/";
-$xpdf::bug     ="billinge\@pa.msu.edu";
+$xpdf::www     ="http://pdfgetn.sourceforge.net/";
+$xpdf::bug     ="tproffen\@lanl.gov";
 
 $xpdf::status='';
 $xpdf::process='';
 $xpdf::exist=1;
 $xpdf::tutorial="$GLOBE::binpath/tutorial/";
-$xpdf::build="Sat Jun 27 11:53:57 MDT 2009";
+$xpdf::build="Sat Jun 27 16:47:20 MDT 2009";
 
 if ($ENV{'HOME'}) {$GLOBE::localDefault = "$ENV{'HOME'}/.pdfgetn";}
 else              {$GLOBE::localDefault = "$GLOBE::binpath/.pdfgetn";}
@@ -281,6 +281,10 @@ $file_m->command(-label=>'Save',
 			  	   $FLAG::noTemp=1; } } });
 $file_m->command(-label=>'Save GSAS',
                  -command=>sub{&File::saveGsasDialog($menu_f);});
+
+$file_m->separator();
+$file_m->command(-label=>'Batch process',
+                 -command=>sub{&File::batchProcess($menu_f);});
 
 $file_m->separator();
 $file_m->command(-label=>'Exit', 

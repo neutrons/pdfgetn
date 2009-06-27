@@ -1,4 +1,4 @@
-#!c:/programs/perl/bin/perl.exe
+#!/usr/bin/perl
 #----------------------------------------------------------------------------
 # Prepares PDFgetN distribution for making Windows installer
 #----------------------------------------------------------------------------
@@ -39,15 +39,15 @@ unlink("PDFgetN.pl.old");
 
 ####################### Step 4: Convert CR/LF for DOS/Windows ###############
 
-system ("unix2dos 00INSTALL LICENSE.txt CHANGES.LOG PDFgetN.htm");
-system ("unix2dos defaults neutron.table");
-system ("unix2dos templates/GSAS.temp");
-system ("unix2dos templates/IPNS_Ascii.temp");
-system ("unix2dos templates/ISIS_Ariel.temp");
-system ("unix2dos templates/ISIS_Norm.temp");
-system ("unix2dos tutorial/SEPD/*.hst");
-system ("unix2dos tutorial/NPDF/*.gr");
-system ("unix2dos tutorial/NPDF/*.sq");
+#system ("unix2dos 00INSTALL LICENSE.txt CHANGES.LOG PDFgetN.htm");
+#system ("unix2dos defaults neutron.table");
+#system ("unix2dos templates/GSAS.temp");
+#system ("unix2dos templates/IPNS_Ascii.temp");
+#system ("unix2dos templates/ISIS_Ariel.temp");
+#system ("unix2dos templates/ISIS_Norm.temp");
+#system ("unix2dos tutorial/SEPD/*.hst");
+#system ("unix2dos tutorial/NPDF/*.gr");
+#system ("unix2dos tutorial/NPDF/*.sq");
 
 print "##############################################################\n";
 print "# You are now ready to build the PDFgetN binary ..           #\n";
@@ -56,10 +56,10 @@ print "##############################################################\n";
 
 sub makebin 
 {
-  $val=system("make -f Makefile.win clean");
+  $val=system("make clean");
   $val=$val/256; if ($val){ print STDOUT "Build failed - $!\n"; exit; }
-  $val=system("make -f Makefile.win install");
+  $val=system("make install");
   $val=$val/256; if ($val){ print STDOUT "Build failed - $!\n"; exit; }
-  $val=system("make -f Makefile.win clean");
+  $val=system("make clean");
   $val=$val/256; if ($val){ print STDOUT "Build failed - $!\n"; exit; }
 }

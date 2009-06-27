@@ -2,14 +2,14 @@
 # Makefile for IPNS binary to ascii conversion program
 #####################################################################
 
-CC  = gcc
+CC       = gcc
 CCFLAGS  = -g
 
-F77     = gfortran
-FFLAGS  = -O0 -fno-f2c -ffixed-line-length-78 -std=legacy -w
-LDFLAGS =
-INSTALL_DIR  = /usr/local/lib/PDFgetN-1.6.4/binary
-INSTALL_MOD = 755
+F77          = gfortran
+FFLAGS       = -O0 -fno-f2c -ffixed-line-length-78 -std=legacy -w
+LDFLAGS      =
+INSTALL_DIR  = ../../binary
+INSTALL_MOD  = 755
 
 OBJC_BTOA = sepdbtoa.o
 OBJC_INFO = sepdinfo.o
@@ -36,14 +36,6 @@ install: sepdbtoa sepdinfo asc2plot
 	chmod $(INSTALL_MOD) $(INSTALL_DIR)/sepdinfo
 	cp asc2plot $(INSTALL_DIR)
 	chmod $(INSTALL_MOD) $(INSTALL_DIR)/asc2plot
-
-local: sepdbtoa sepdinfo asc2plot
-	cp sepdbtoa ../../binary
-	chmod $(INSTALL_MOD) ../../binary/sepdbtoa
-	cp sepdinfo ../../binary
-	chmod $(INSTALL_MOD) ../../binary/sepdinfo
-	cp asc2plot ../../binary
-	chmod $(INSTALL_MOD) ../../binary/asc2plot
 
 clean: 
 	rm -f sepdbtoa sepdinfo asc2plot *.o
