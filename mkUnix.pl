@@ -24,9 +24,9 @@ open(FILE,"PDFgetN.pl") || die "Could not open PDFgetN.pl: $!";
 
 ####################### Step 1: Clean all program subdirectories ############
 
-system("cd fortran ; make -f Makefile.win clean ; cd .. ;");
-system("cd bin2asc ; make -f Makefile.win clean ; cd .. ;"); 
-system("cd raw2asc/ipns ; make -f Makefile.win clean ; cd ../.. ;"); 
+system("cd fortran ; make clean ; cd .. ;");
+system("cd bin2asc ; make clean ; cd .. ;"); 
+system("cd raw2asc/ipns ; make clean ; cd ../.. ;"); 
 system("rm -f binary/*");
 system("rm -f PDFgetN.exe");
 system("rm -f .temp.hst");
@@ -59,7 +59,7 @@ system ("dos2unix defaults neutron.table *.pm *.pl templates/* tutorial/*");
 
 ####################### Step 4: Create TAR file #############################
 
-system ("cd .. ; tar -cvozf ../downloads/pdfgetn-$version.tar.gz pdfgetn/");
+system ("cd .. ; tar -cvzf ../downloads/PDFgetN-$version.tar.gz PDFgetN/");
 
 print "##############################################################\n";
 print "# Archive PDFgetN-$version.tar.gz successfully build ...        #\n";

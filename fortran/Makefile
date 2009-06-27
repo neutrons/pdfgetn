@@ -2,11 +2,11 @@
 # Makefile for data processing codes ..
 ##############################################################################
 
-F77  =  g77
-FFLAGS  = -O0 -fno-f2c
+F77  =  gfortran
+FFLAGS  = -O0 -fno-f2c -ffixed-line-length-78 -std=legacy -w
 LDFLAGS = 
 
-INSTALL_DIR  = /usr/local/lib/PDFgetN-1.6.1/binary
+INSTALL_DIR  = /usr/local/lib/PDFgetN-1.6.4/binary
 INSTALL_MOD = 755
 
 ##############################################################################

@@ -3,12 +3,12 @@
 #####################################################################
 
 CC  = gcc
-F77  =  g77
 CCFLAGS  = -g
-FFLAGS  = -O0 -fno-f2c
-LDFLAGS = -lm
 
-INSTALL_DIR  = /usr/local/lib/PDFgetN-1.6.1/binary
+F77     = gfortran
+FFLAGS  = -O0 -fno-f2c -ffixed-line-length-78 -std=legacy -w
+LDFLAGS =
+INSTALL_DIR  = /usr/local/lib/PDFgetN-1.6.4/binary
 INSTALL_MOD = 755
 
 OBJC_BTOA = sepdbtoa.o
