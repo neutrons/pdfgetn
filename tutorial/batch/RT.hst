@@ -1,0 +1,51 @@
+History written: Sat Jun 27 14:18:54 2009
+produced by 176496
+##### Run Information     runCorrection=T
+prep=gsas     machine=npdf
+run=npdf_01018     background=npdf_00907
+smooth=2    smoothParam=32 32 0    backKillThresh=-1.0
+in beam: radius=0.45325     height=4.5
+temp=295.0     runTitle=Run 1018: LMO - RT (before) HIPPO-furnace               
+
+##### Vanadium     runCorrection=T
+run=npdf_00709     background=npdf_00710
+smooth=2    smoothParam=32 32 0    vanKillThresh=-1.0    vBackKillThresh=-1.0
+in beam: radius=0.47625     height=4.5
+
+##### Container     runCorrection=T
+run=npdf_00917     background=npdf_00907
+smooth=2    smoothParam=32 32 0    cBackKillThresh=-1.0
+wallThick=0.023     atomDensity=0.072110
+atomic information: scattCS=5.100     absorpCS=5.080
+
+##### Sample Material     numElements=3     NormLaue=0.02791
+Element relAtomNum atomMass atomCoherCS atomIncoherCS atomAbsorpCS
+  La        0.2000  138.905      8.5300        1.1300      8.97000
+  Mn        0.2000   54.931     -1.7500        0.4000     13.30000
+   O        0.6000   15.999      4.2320        0.0008      0.00019
+density=2.00     effDensity=4.1463
+
+##### Banks=6  deltaQ=0.01  matchRef=6  matchScal=T  matchOffset=T
+bank   angle   blendQmin   blendQmax       (0.0 means no info)
+  1     90.0        1.62    29.42   
+  2    -90.0        1.62    29.42   
+  3    119.0        1.97    35.85   
+  4    -119.0        1.97    35.85   
+  5    148.0        2.20    40.00   
+  6    -148.0        2.20    40.00   
+
+##### Program Specific Information
+## Ft     calcError=1     (1 for true, 0 for false)
+numRpoints=2000     maxR=20.0     numDensity=0.0   intMaxR=1.5
+## Damp     Qmin=2     Qmax=32     startDampQ=32    QAveMin=0.6
+dampFuncType=0     modEqn=1.0000*S(Q) +0.0000 +0.0000*Q     dampExtraToZero=0
+## Blend     numBanks=6     banks=1,2,3,4,5,6
+soqCorrFile=
+## Soqd     minProcOut=0
+samPlazcek=0     vanPlazcek=0     smoothData=0     modifyData=1
+## Corps     minProcOut=0     numBanksMiss=0
+
+##### prepgsas     prepOutput=1     numBanksMiss=0       fileExt=gsa
+instParamFile=npdf_displex_757.iparm
+numBanksAdd=0
+numBanksMult=0
