@@ -7,7 +7,7 @@ CCFLAGS  = -g
 
 F77          = gfortran
 FFLAGS       = -O0 -fno-f2c -ffixed-line-length-78 -std=legacy -w
-LDFLAGS      =
+LDFLAGS      = -lm
 INSTALL_DIR  = ../../binary
 INSTALL_MOD  = 755
 

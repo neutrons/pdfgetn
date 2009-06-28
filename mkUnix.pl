@@ -55,11 +55,12 @@ unlink("PDFgetN.pl.old");
 ####################### Step 3: Convert CR/LF for UNIX ######################
 
 system ("dos2unix 00INSTALL LICENSE.txt CHANGES.LOG PDFgetN.htm");
-system ("dos2unix defaults neutron.table *.pm *.pl templates/* tutorial/*");
+system ("dos2unix defaults neutron.table *.pm *.pl templates/*");
+system ("dos2unix tutorial/batch/* tutorial/SEPD/* tutorial/NPDF/*");
 
 ####################### Step 4: Create TAR file #############################
 
-system ("cd .. ; tar -cvzf ../downloads/PDFgetN-$version.tar.gz PDFgetN/");
+system ("cd .. ; tar --exclude='*CVS*' -cvzf ../downloads/PDFgetN-$version.tar.gz PDFgetN/");
 
 print "##############################################################\n";
 print "# Archive PDFgetN-$version.tar.gz successfully build ...        #\n";

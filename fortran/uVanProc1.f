@@ -17,19 +17,25 @@ C*  This subroutine is designed specifically to smooth background,
 C*  vanadium and empty can data from the HIPD instrument at LANSCE;
 C*  however, hopefully it will be general enough to be used more generally.
 C*
-C* $Id: uVanProc1.f,v 1.1 2006/03/12 09:59:25 tproffen Exp $
+C* $Id: uVanProc1.f,v 1.2 2009/06/28 00:17:49 tproffen Exp $
 C*
 C* $Log: uVanProc1.f,v $
-C* Revision 1.1  2006/03/12 09:59:25  tproffen
-C* Initial revision
+C* Revision 1.2  2009/06/28 00:17:49  tproffen
+C* Fixing up 1.6.6
+C*
+C* Revision 1.1.1.1  2006/03/12 09:59:25  tproffen
+C* Initial import
 C*
 c Revision 1.2  1997/04/11  19:54:28  billinge
 c removed DEC fortran
 C*
 C*
 C* $Log: uVanProc1.f,v $
-C* Revision 1.1  2006/03/12 09:59:25  tproffen
-C* Initial revision
+C* Revision 1.2  2009/06/28 00:17:49  tproffen
+C* Fixing up 1.6.6
+C*
+C* Revision 1.1.1.1  2006/03/12 09:59:25  tproffen
+C* Initial import
 C*
 C* Revision 1.3 1999/05/26  12:46:30  gutmann
 C* program worked only when Q array was decreasing. Extended
@@ -120,7 +126,7 @@ C	SMOOTH S(Q) -- don't fit points where a peak is present
 C
 
 	write(6, *) '%%info: smoothing vanadium using',
-	1    ' overlapping second-order polynomials...'
+     1    ' overlapping second-order polynomials...'
 	i1 = 1
 	i2 = 1
 	IA = 1

@@ -78,6 +78,12 @@ unless (-e $execDir) {
    chmod 0755,"$execDir";
 }
 
+my($manDir)="$libDir/manual";
+unless (-e $manDir) {
+   mkdir("$manDir",'0755') || die "Could not create $manDir: $!";
+   chmod 0755,"$manDir";
+}
+
 print STDOUT "% main executable will be put in: $binDir\n";
 print STDOUT "% distribution files will be put in: $libDir\n";
 
@@ -171,48 +177,6 @@ while(1){
 }
 print STDOUT "% Using make program: $make\n";
 
-##### f77 #####
-my($f77)='g77';
-my($f77Flags)='-O0 -fno-f2c';
-$val=&inPath("$f77");
-unless($val=~/$f77/){ $f77='f77'; $val=&inPath("$f77"); }
-while(1){
-    if($val=~/$f77/){
-	last;
-    }else{
-	print STDOUT ">> Specify a FORTRAN 77 compiler (Ctrl-C to exit): ";
-	$f77=<STDIN>; chomp($f77);
-	(next)unless($f77);
-	$val=&inPath("$f77");
-    }
-}
-print STDOUT ">> Specify FORTRAN 77 compiler flags [$f77Flags]: ";
-$val=<STDIN>; chomp($val);
-($f77Flags="$val")if($val);
-($f77Flags='')if($val eq 'none');
-print STDOUT "% Using FORTRAN compiler: $f77 with flags: $f77Flags\n";
-
-##### C #####
-my($gcc)='gcc';
-my($gccFlags)='-g';
-$val=&inPath("$gcc");
-unless($val=~/$gcc/){ $gcc='cc'; $val=&inPath("$gcc"); }
-while(1){
-    if($val=~/$gcc/){
-	last;
-    }else{
-	print STDOUT ">> Specify a C compiler (Ctrl-C to exit): ";
-	$gcc=<STDIN>; chomp($gcc);
-	(next)unless($gcc);
-	$val=&inPath("$gcc");
-    }
-}
-print STDOUT ">> Specify C compiler flags [$gccFlags]: ";
-$val=<STDIN>; chomp($val);
-($gccFlags="$val")if($val);
-($gccFlags='')if($val eq 'none');
-print STDOUT "% Using C compiler: $gcc with flags: $gccFlags\n";
-
 #################### Step 4: Check for extra programs ################
 print STDOUT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>";
 print STDOUT "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n";
@@ -221,8 +185,7 @@ my($kuplotVersion)='';
 my($kuplotMessage)="!!!!!!!!!! KUPLOT not found !!!!!!!!!!\n";
 $kuplotMessage.="! KUPLOT Version 4.1 does not exist in your path. ";
 $kuplotMessage.="Download KUPLOT from \n";
-$kuplotMessage.="! http://www.pa.msu.edu/cmp/billinge-group/programs/";
-$kuplotMessage.="discus/kuplot.html\n";
+$kuplotMessage.="! http://discus.sourceforge.net\n";
 $kuplotMessage.="! for plotting capabilities within PDFgetN. ";
 $kuplotMessage.="NOTE THIS IS NOT NECESSARY.\n";
 $kuplotMessage.=   "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
@@ -250,33 +213,6 @@ if($val=~/kuplot/){
 }else{
     print STDOUT "$kuplotMessage";
 }
-
-##### OpenGENIE #####
-my($genieMessage)="!!!!!!!!!! OpenGENIE not found !!!!!!!!!!\n";
-$genieMessage.="! OpenGENIE does not exist in your path.\n";
-$genieMessage.="! Downlaod OpenGENIE from http://www.isis.rl.ac.uk/OpenGENIE";
-$genieMessage.=" to preprocess \n";
-$genieMessage.="! NORM data files. NOTE THIS IS NOT NECESSARY.\n";
-$genieMessage   .="!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
-$val=&inPath('genie');
-if($val){
-    print STDOUT "% Found OpenGENIE\n";
-}else{
-    print STDOUT "$genieMessage";
-}
-print STDOUT ">> Press Enter to continue ... "; <STDIN>;
-
-#################### Step 5: Edit the Makefiles ######################
-print STDOUT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>";
-print STDOUT "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n";
-##### in fortran/ #####
-&makefile('fortran');
-
-##### in bin2asc/ #####
-&makefile('bin2asc');
-
-##### in raw2asc/ipns #####
-&makefile('raw2asc/ipns');
 
 #################### Step 6: Edit the PDF* files #####################
 print STDOUT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>";
@@ -320,6 +256,8 @@ $val=$val/256; if ($val){
     exit;
 }
 
+system ("cp binary/* $libDir/binary/ ; chmod 755 $libDir/binary/*");
+system ("cp manual/getn_man.pdf $libDir/manual/ ; chmod 644 $libDir/manual/*");
 
 #################### Step 7: Copy over the perl files ################
 print STDOUT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>";
@@ -352,15 +290,7 @@ unless (-e "$libDir/tutorial") {
    chmod 0755,"$libDir/tutorial";
 }
 
-foreach(<tutorial/*>){
-    (next)if(-d $_);
-    $val=system("cp $_ $libDir/$_");
-    $val=$val/256; if($val){
-	print STDOUT "\n! Installed failed. Must rerun install.\n";
-	exit;
-    }
-    chmod 0644,"$libDir/$_";
-}
+system ("cp -r tutorial/* $libDir/tutorial/");
 print STDOUT "done\n";
 
 ##### copy templates directory #####
@@ -431,6 +361,9 @@ unless($val=~/$execDir/){
     print STDOUT "% PDFgetN, you might want to add the following to\n";
     print STDOUT "% your PATH: $execDir\n";
 }
+print STDOUT "% \n";
+print STDOUT "% The manual files are located in the directory \n";
+print STDOUT "% $libDir/manual ... \n";
 print STDOUT "% \n";
 print STDOUT "% The tutorial files are located in the directory \n";
 print STDOUT "% $libDir/tutorial ... \n";
@@ -508,44 +441,6 @@ sub inINC{
     $val=~s/:://;
 
     return $val;
-}
-
-########## void makfile(directory)
-# This subroutine will replace all the appropriate variables for the
-# compilers in the directory specified
-##############################
-sub makefile{
-    my($filename)="@_";
-    $filename.="/Makefile";
-
-    my($f77Key)='F77';
-    my($f77FlagKey)='FFLAGS';
-    my($gccKey)='CC';
-    my($gccFlagKey)='CCFLAGS';
-    my($dirKey)='INSTALL_DIR';
-
-    rename("$filename","$filename.orig") || die "Could not move $filename: $!";
-    open(OLD,"$filename.orig") || die "Could not open $filename.orig: $!";
-    open(NEW,">$filename") || die "Could not open $filename: $!";
-    print STDOUT "% editing $filename . . . ";
-    my $line;
-    foreach $line (<OLD>){
-	if($line=~/$f77Key\s+=/){
-	    $line="$f77Key  =  $f77\n";
-	}elsif($line=~/$f77FlagKey\s+=/){
-	    $line="$f77FlagKey  = $f77Flags\n";
-	}elsif($line=~/$gccKey\s+=/){
-	    $line="$gccKey  = $gcc\n";
-	}elsif($line=~/$gccFlagKey\s+=/){
-	    $line="$gccFlagKey  = $gccFlags\n";
-	}elsif($line=~/$dirKey\s+=/){
-	    $line="$dirKey  = $execDir\n";
-	}
-	print NEW "$line";
-	}
-    print STDOUT "done\n";
-    close(NEW) || die "Could not close $filename: $!";
-    close(OLD) || die "Could not close $filename.orig: $!";
 }
 
 ########## void editPDF(filename) 

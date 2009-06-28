@@ -176,7 +176,7 @@ $xpdf::status='';
 $xpdf::process='';
 $xpdf::exist=1;
 $xpdf::tutorial="$GLOBE::binpath/tutorial/";
-$xpdf::build="Sat Jun 27 16:47:20 MDT 2009";
+$xpdf::build="Sat Jun 27 18:13:45 MDT 2009";
 
 if ($ENV{'HOME'}) {$GLOBE::localDefault = "$ENV{'HOME'}/.pdfgetn";}
 else              {$GLOBE::localDefault = "$GLOBE::binpath/.pdfgetn";}
