@@ -205,6 +205,7 @@ C            write(6, *), k, coefficients(i-k+1)
             local_data1_err(i) = local_data1_err(i)+
      1        local_data_err(k)**2*coefficients(left_points+k-i+1)**2
          enddo
+         local_data1_err(i) = sqrt(local_data1_err(i))
       enddo
 
 C Overwrite now the data array with the smoothed arrays data1 and 
