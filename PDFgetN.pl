@@ -163,7 +163,7 @@ use strict;
 
 package xpdf;
 
-$xpdf::version ="1.6.6";
+$xpdf::version ="1.6.7";
 $xpdf::authors ="Peter Peterson, Thomas Proffen, ";
 $xpdf::authors.="Matthias Gutmann & Simon Billinge\n";
 $xpdf::authors.="Michigan State University\n";
@@ -176,7 +176,7 @@ $xpdf::status='';
 $xpdf::process='';
 $xpdf::exist=1;
 $xpdf::tutorial="$GLOBE::binpath/tutorial/";
-$xpdf::build="Sat Jun 27 18:13:45 MDT 2009";
+$xpdf::build="Tue Aug 25 18:05:07 MDT 2009";
 
 if ($ENV{'HOME'}) {$GLOBE::localDefault = "$ENV{'HOME'}/.pdfgetn";}
 else              {$GLOBE::localDefault = "$GLOBE::binpath/.pdfgetn";}
