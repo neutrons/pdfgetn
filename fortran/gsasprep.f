@@ -444,6 +444,7 @@ c-------------------------------------------------------------------------
           read(line(icol+1:80),*) cur(i)
         endif
         if (line(1:8).eq.'TIME_MAP') goto 10
+        if (line(1:4).eq.'BANK') goto 10
         goto 5
 10      continue
         close(73)
@@ -466,9 +467,12 @@ c-------------------------------------------------------------------------
           if (tot_cur.gt.0) then
             weight(i)=float(nfiles)*cur(i)/tot_cur
             write(6,*)'%%info: File ',i,' - weight (uAmp) ',weight(i)
-          else
+          elseif (tot_t0.gt.0) then
             weight(i)=float(nfiles)*t0(i)/tot_t0
             write(6,*)'%%info: File ',i,' - weight (T0) ',weight(i)
+          else
+            weight(i)=1.0/float(nfiles)
+            write(6,*)'%%info: File ',i,' - weight (files) ',weight(i)
           endif
         endif
       enddo

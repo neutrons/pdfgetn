@@ -3,7 +3,7 @@
 ##############################################################################
 
 F77  =  gfortran
-FFLAGS  = -O0 -fno-f2c -ffixed-line-length-78 -std=legacy -w
+FFLAGS  = -O0 -ffixed-line-length-78 -std=legacy -w
 LDFLAGS = 
 
 INSTALL_DIR = ../binary

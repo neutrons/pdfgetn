@@ -272,6 +272,13 @@ c
            local_monitor=1.0
            lmon=.true.
          endif
+c
+c MANTID files are normalized by pCharge => local_monitor=1
+c
+         if (line(1:23).eq.'# Normalised to pCharge') then
+           local_monitor=1.0
+           lmon=.true.
+         endif
        if (.not.lmon) goto 10
 c
 c Now try to find the bank we are looking for
@@ -322,11 +329,11 @@ c Type CONST
 c Type SLOG
 
            elseif (ilog.gt.0) then
-             read(line(5:icons+3),*,err=998) ib,nc,nr
+             read(line(5:ilog+3),*,err=998) ib,nc,nr
              lbank=(ib.eq.local_bank_id(local_bank_no))
              if (lbank) then
                bank_line=line
-               read(line(icons+9:ll),*,err=998) gtmin,gtmax,gtlog
+               read(line(ilog+9:ll),*,err=998) gtmin,gtmax,gtlog
                if (local_print_level.ge.2) then
                  write(*,*)'%%info: TOF binning type SLOG found'
                  write(*,*)'%%info: TOF min, max, log  :',
