@@ -66,10 +66,11 @@ C the end.
       if (local_exist .eqv. .false.) then
          open(local_unit,file=local_filename,status='new',err=999)
       else
-         open(local_unit, file=local_filename,status='old')
-         do while (.true.)
-            read(local_unit, *, end = 10)
-         enddo
+         open(local_unit, file=local_filename,status='old',
+     1        access='append')
+c         do while (.true.)
+c            read(local_unit, *, end = 10)
+c         enddo
       endif
  10   write(6,*) '%%info: writing intermediate graphics',
      1     ' to  file : ', local_filename(1:local_dfl+local_dfo)
